@@ -1,5 +1,5 @@
 use std::time::SystemTime;
-use uom::si::f64::*;
+use uom::{si::{f64::*, time::nanosecond}, ConstZero};
 
 use crate::teh_o_error::TehOError;
 
@@ -7,8 +7,17 @@ use crate::teh_o_error::TehOError;
 /// Timer class translated from OpenMC
 pub struct Timer{
     running: bool,
-    elapsed: Time,
+    elapsed_time: Time,
     start: SystemTime,
+}
+
+impl Default for Timer {
+    fn default() -> Self {
+        Self { running: false, 
+            elapsed_time: Time::ZERO, 
+            start: SystemTime::now()
+        }
+    }
 }
 
 impl Timer {
@@ -18,17 +27,27 @@ impl Timer {
     }
 
     pub fn elapsed(&mut self) -> Result<Time, TehOError> {
-        let time_elapsed_ns: f64 = self.start.elapsed()?.as_nanos() as f64;
 
-        return Ok(self.elapsed);
+        if self.running == true {
+            let time_elapsed_ns: f64 = self.start.elapsed()?.as_nanos() as f64;
+            self.elapsed_time = Time::new::<nanosecond>(time_elapsed_ns);
+            return Ok(self.elapsed_time);
+        } else {
+            return Ok(self.elapsed_time);
+        }
     }
 
-    pub fn stop(&mut self){
+    pub fn stop(&mut self) -> Result<(), TehOError>{
+        self.elapsed_time = self.elapsed()?;
+        self.running =  false;
 
+        Ok(())
     }
 
     pub fn reset(&mut self){
-
+        self.running =  false;
+        self.elapsed_time = Time::new::<nanosecond>(0.0);
     }
 
 }
+
