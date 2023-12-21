@@ -1,4 +1,6 @@
 
+use std::time::SystemTimeError;
+
 use thiserror::Error;
 
 /// Master Error type of this crate
@@ -48,6 +50,16 @@ pub enum TehOError {
     #[error("OpenMC Err Warning")]
     OpenMcErrWarning,
 
+    /// 
+    #[error("SystemTimeError")]
+    SystemTimeError(SystemTimeError),
+
+}
+
+impl From<SystemTimeError> for TehOError {
+    fn from(value: SystemTimeError) -> Self {
+        TehOError::SystemTimeError(value)
+    }
 }
 
 
