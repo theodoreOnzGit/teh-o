@@ -12,6 +12,10 @@ improvements and make the coupling with thermal hydraulics solvers
 easier. This could be a direct coupling of Monte Carlo with thermal 
 hydraulics, or automatic MGXS generation for multiphysics deterministic 
 code.
+
+Some improvements I hope to include are unit safety, and cross platform 
+capability.
+
 ## Nomenclature 
 
 It is named after a beloved local beverage, teh-o (or black tea in Hokkien).
