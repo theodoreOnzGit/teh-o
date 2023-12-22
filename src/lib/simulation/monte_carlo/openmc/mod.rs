@@ -3,6 +3,7 @@ use self::timer::Timer;
 pub mod timer;
 
 // replacement for the namespace "simulation" in C
+#[derive(Debug,Default,PartialEq, PartialOrd, Clone, Copy)]
 pub struct OpenMCSimulationData { 
     pub time_active: Timer,
     pub time_bank: Timer,

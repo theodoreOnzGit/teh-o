@@ -7,6 +7,7 @@ use crate::teh_o_error::TehOError;
 
 
 /// Timer class translated from OpenMC
+#[derive(Debug,PartialEq, PartialOrd, Clone, Copy)]
 pub struct Timer{
     running: bool,
     elapsed_time: Time,
