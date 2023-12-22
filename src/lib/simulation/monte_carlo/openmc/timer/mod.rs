@@ -1,5 +1,7 @@
 use std::time::SystemTime;
-use uom::{si::{f64::*, time::nanosecond}, ConstZero};
+use uom::ConstZero;
+use uom::si::time::nanosecond;
+use uom::si::f64::*;
 
 use crate::teh_o_error::TehOError;
 
