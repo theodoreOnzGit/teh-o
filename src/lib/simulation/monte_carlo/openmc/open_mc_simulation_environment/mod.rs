@@ -1,10 +1,12 @@
+use self::openmc_settings::OpenMCSettings;
+
 use super::timer::Timer;
 
 
 pub mod openmc_settings;
 
 // replacement for the namespace "simulation" in C
-#[derive(Debug,Default,PartialEq, PartialOrd, Clone)]
+#[derive(Debug,Default,PartialEq, Clone)]
 pub struct OpenMCSimulationEnvironmentVariables{
     pub current_batch: Option<u32>,
     pub current_gen: Option<u32>,
@@ -47,4 +49,7 @@ pub struct OpenMCSimulationEnvironmentVariables{
     pub time_event_surface_crossing: Timer,
     pub time_event_collision: Timer,
     pub time_event_death: Timer,
+
+    /// openmc settings 
+    pub settings: OpenMCSettings,
 }
