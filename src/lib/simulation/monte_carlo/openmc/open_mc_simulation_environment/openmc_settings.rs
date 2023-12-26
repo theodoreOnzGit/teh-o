@@ -211,7 +211,11 @@ pub struct OpenMCSettings {
 
 #[derive(Debug,PartialEq, PartialOrd, Clone)]
 pub enum RunMode {
-    Eigenvalue
+    FixedSource,
+    Eigenvalue,
+    Plotting,
+    Particle,
+    Volume
 }
 
 #[derive(Debug,PartialEq, PartialOrd, Clone)]
