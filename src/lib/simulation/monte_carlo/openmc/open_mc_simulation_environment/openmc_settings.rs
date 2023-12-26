@@ -169,6 +169,7 @@ pub struct OpenMCSettings {
     pub max_surface_particles: Option<i64>,
 
     // temperature method (TBD)
+    pub temperature_method: Option<TemperatureMethod>,
 
     /// tolerance in [K] on choosing temperatures 
     /// I just used uom this time
@@ -211,4 +212,10 @@ pub struct OpenMCSettings {
 #[derive(Debug,PartialEq, PartialOrd, Clone)]
 pub enum RunMode {
     Eigenvalue
+}
+
+#[derive(Debug,PartialEq, PartialOrd, Clone)]
+pub enum TemperatureMethod {
+    Nearest,
+    Intepolation
 }
