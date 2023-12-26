@@ -1,8 +1,8 @@
 use std::{path::PathBuf, collections::HashSet};
 
-use uom::si::f64::*;
+use uom::{si::{f64::*, energy::electronvolt, time::second, temperature_interval::degree_celsius, thermodynamic_temperature::kelvin}, ConstZero};
 
-#[derive(Debug,Default,PartialEq, Clone)]
+#[derive(Debug,PartialEq, Clone)]
 pub struct OpenMCSettings {
     /// assumes tallies are spatially separate
     pub assume_separate: Option<bool>,
@@ -136,6 +136,8 @@ pub struct OpenMCSettings {
 
     /// number of (active+inactive) batches 
     pub n_batches: Option<i32>,
+    /// maximum number of batches
+    pub n_max_batches: Option<i32>,
 
     /// maximum number of particle tracks written to file
     pub max_tracks: Option<i32>,
@@ -222,4 +224,94 @@ pub enum RunMode {
 pub enum TemperatureMethod {
     Nearest,
     Intepolation
+}
+
+impl Default for OpenMCSettings {
+    fn default() -> Self {
+        Self { assume_separate: Some(false), 
+            check_overlaps: Some(false), 
+            confidence_intervals: Some(false), 
+            create_fission_neutrons: Some(true),
+            cmfd_run: Some(false), 
+            delayed_photon_scaling: Some(true), 
+            entropy_on: Some(false), 
+            event_based: Some(false),
+            legendre_to_tabular: Some(true), 
+            material_cell_offsets: Some(true), 
+            output_summary: Some(true), 
+            output_tallies: Some(true), 
+            particle_restart_run: Some(false), 
+            photon_transport: Some(false), 
+            reduce_tallies: Some(true), 
+            res_scat_on: Some(false), 
+            restart_run: Some(false), 
+            run_continuous_energy: Some(true), 
+            source_latest: Some(false), 
+            source_separate: Some(false), 
+            source_write: Some(true), 
+            source_mcpl_write: Some(false), 
+            surf_source_write: Some(false), 
+            surf_mcpl_write: Some(false), 
+            survival_biasing: Some(false), 
+            temperature_multipole: Some(false), 
+            trigger_on: Some(false), 
+            trigger_predict: Some(false), 
+            uniform_fission_site_on: Some(false), 
+            unresolved_res_ptables_on: Some(true), 
+            weight_windows_on: Some(false), 
+            weight_window_checkpoint_surface: Some(false), 
+            weight_window_checkpoint_collision: Some(true), 
+            write_all_tracks: Some(false), 
+            write_initial_source: Some(false), 
+            path_cross_sections: None, 
+            path_input: None, 
+            path_output: None, 
+            path_particle_restart: None, 
+            path_sourcepoint: None, 
+            path_statepoint: None, 
+            weight_windows_file: None, 
+            n_inactive: Some(0), 
+            max_lost_particles: Some(10), 
+            rel_max_lost_particles: Some(1.0e-6), 
+            max_write_lost_particles: Some(-1), 
+            gen_per_batch: Some(1), 
+            n_particles: Some(-1), 
+            max_particles_in_flight: Some(100000), 
+            energy_cutoff: Some([Energy::ZERO,
+            Energy::new::<electronvolt>(1000.0),
+            Energy::ZERO,
+            Energy::ZERO]), 
+            time_cutoff: Some([Time::new::<second>(f64::MAX),
+            Time::new::<second>(f64::MAX),
+            Time::new::<second>(f64::MAX),
+            Time::new::<second>(f64::MAX)]), 
+            legendre_to_tabular_points: Some(-1), 
+            max_order: Some(0), 
+            n_log_bins: Some(8000), 
+            n_batches: None, 
+            n_max_batches: None,
+            max_tracks: Some(1000), 
+            res_scat_energy_min: Some(Energy::new::<electronvolt>(0.01)), 
+            res_scat_energy_max: Some(Energy::new::<electronvolt>(1000.0)), 
+            res_scat_nuclides: None, 
+            run_mode: None, 
+            sourcepoint_batch: None, 
+            statepoint_batch: None, 
+            source_write_surf_id: None, 
+            max_split: Some(1000), 
+            max_surface_particles: None, 
+            temperature_method: Some(TemperatureMethod::Nearest), 
+            temperature_tolerance: Some(TemperatureInterval::new::<degree_celsius>(10.0)), 
+            temperature_default: Some(ThermodynamicTemperature::new::<kelvin>(293.6)), 
+            temperature_range: Some([ThermodynamicTemperature::ZERO,
+            ThermodynamicTemperature::ZERO]), 
+            trace_batch: None, 
+            trace_gen: None, 
+            trace_particle: None, 
+            track_identifiers: None, 
+            verbosity: Some(7), 
+            weight_cutoff: Some(0.25), 
+            weight_survive: Some(1.0),
+        }
+    }
 }
