@@ -1,29 +1,32 @@
 use super::timer::Timer;
 
 
+pub mod openmc_settings;
+
+// replacement for the namespace "simulation" in C
 #[derive(Debug,Default,PartialEq, PartialOrd, Clone)]
 pub struct OpenMCSimulationEnvironmentVariables{
-    current_batch: Option<u32>,
-    current_gen: Option<u32>,
-    initialised: bool,
-    keff: f64,
-    keff_std: Option<f64>,
-    k_col_abs: f64,
-    k_col_tra: f64,
-    k_abs_tra: f64,
-    log_spacing: Option<f64>,
-    n_lost_particles: u32,
-    need_depletion_rs: bool,
-    restart_batch: Option<i32>,
-    satisfy_triggers: bool,
-    total_gen: u32,
-    total_weight: Option<f64>,
-    work_per_rank: Option<i64>,
+    pub current_batch: Option<u32>,
+    pub current_gen: Option<u32>,
+    pub initialised: bool,
+    pub keff: f64,
+    pub keff_std: Option<f64>,
+    pub k_col_abs: f64,
+    pub k_col_tra: f64,
+    pub k_abs_tra: f64,
+    pub log_spacing: Option<f64>,
+    pub n_lost_particles: u32,
+    pub need_depletion_rs: bool,
+    pub restart_batch: Option<i32>,
+    pub satisfy_triggers: bool,
+    pub total_gen: u32,
+    pub total_weight: Option<f64>,
+    pub work_per_rank: Option<i64>,
 
     // RegularMesh and EntropyMesh 
     // need to be implemented
-    k_generation: Option<Vec<f64>>,
-    work_index: Option<Vec<i64>>,
+    pub k_generation: Option<Vec<f64>>,
+    pub work_index: Option<Vec<i64>>,
 
     pub time_active: Timer,
     pub time_bank: Timer,

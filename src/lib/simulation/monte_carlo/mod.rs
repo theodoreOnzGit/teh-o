@@ -1,5 +1,7 @@
 use crate::teh_o_error::TehOError;
 
+use self::openmc::open_mc_simulation_environment::OpenMCSimulationEnvironmentVariables;
+
 pub mod openmc;
 
 /// this function encompasses all the main 
@@ -23,4 +25,11 @@ pub fn openmc_run() -> Result<(),TehOError>{
     simulation.time_total.stop()?;
     Ok(())
 
+}
+
+fn openmc_simulation_init(
+    sim_environment: OpenMCSimulationEnvironmentVariables) -> 
+Result<(), TehOError>{
+
+    Ok(())
 }
