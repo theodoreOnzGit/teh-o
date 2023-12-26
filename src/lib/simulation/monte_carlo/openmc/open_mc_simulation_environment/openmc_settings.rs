@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 #[derive(Debug,Default,PartialEq, PartialOrd, Clone)]
 pub struct OpenMCSettings {
     /// assumes tallies are spatially separate
@@ -72,6 +74,23 @@ pub struct OpenMCSettings {
     pub write_all_tracks: Option<bool>,
     /// write out initial source file?
     pub write_initial_source: Option<bool>,
+
+    // paths to various files
+    /// path to cross_sections.xml
+    pub path_cross_sections: Option<PathBuf>,
+    /// path to input xml (may or may not use)
+    pub path_input: Option<PathBuf>,
+    /// path to output
+    pub path_output: Option<PathBuf>,
+    /// path to a particle restart file
+    pub path_particle_restart: Option<PathBuf>,
+    /// path to a source file
+    pub path_sourcepoint: Option<PathBuf>,
+    /// path to a statepoint file
+    pub path_statepoint: Option<PathBuf>,
+    /// Location of weight window file to 
+    /// load of simulation initialisation
+    pub weight_windows_file: Option<PathBuf>,
 
 
 }
