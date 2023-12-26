@@ -49,4 +49,29 @@ pub struct OpenMCSettings {
     pub surf_source_write : Option<bool>,
     /// write surface mcpl file?
     pub surf_mcpl_write : Option<bool>,
+
+    /// use survival biasing?
+    pub survival_biasing: Option<bool>,
+    /// use multipole data?
+    pub temperature_multipole: Option<bool>,
+    /// tally triggers enabled?
+    pub trigger_on: Option<bool>,
+    /// predict batches for triggers?
+    pub trigger_predict: Option<bool>,
+    /// uniform fission site method on?
+    pub uniform_fission_site_on: Option<bool>,
+    /// use unresolved resonance probability tables?
+    pub unresolved_res_ptables_on: Option<bool>,
+    /// weight windows enabled?
+    pub weight_windows_on: Option<bool>,
+    /// Enable weight window check upon surface crossing?
+    pub weight_window_checkpoint_surface: Option<bool>,
+    /// Enable weight window check upon surface crossing?
+    pub weight_window_checkpoint_collision: Option<bool>,
+    /// write track files for every particle?
+    pub write_all_tracks: Option<bool>,
+    /// write out initial source file?
+    pub write_initial_source: Option<bool>,
+
+
 }
