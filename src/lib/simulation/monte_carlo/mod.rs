@@ -13,10 +13,14 @@ pub mod openmc;
 pub fn openmc_run() -> Result<(),TehOError>{
 
     // openmc::simulation::time_total::start();
-    //
+    let mut simulation = openmc::open_mc_simulation_environment::
+        OpenMCSimulationEnvironmentVariables::default();
+    simulation.time_total.start();
+    
     // openmc_simulation_init()
     
-
+    // openmc::simulation::time_total::stop();
+    simulation.time_total.stop()?;
     Ok(())
 
 }

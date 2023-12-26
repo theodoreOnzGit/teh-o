@@ -1,10 +1,13 @@
 use std::time::SystemTime;
-use uom::{si::{f64::*, time::nanosecond}, ConstZero};
+use uom::ConstZero;
+use uom::si::time::nanosecond;
+use uom::si::f64::*;
 
 use crate::teh_o_error::TehOError;
 
 
 /// Timer class translated from OpenMC
+#[derive(Debug,PartialEq, PartialOrd, Clone, Copy)]
 pub struct Timer{
     running: bool,
     elapsed_time: Time,
