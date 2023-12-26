@@ -183,6 +183,29 @@ pub struct OpenMCSettings {
     /// I just use uom this time 
     pub temperature_range: Option<[ThermodynamicTemperature;2]>,
 
+    /// batch to trace particle on 
+    pub trace_batch: Option<i32>,
+
+    /// generation to trace particle on 
+    pub trace_gen: Option<i32>,
+
+    /// particle ID to enable trace on 
+    pub trace_particle: Option<i64>,
+
+    /// particle numbers for writing tracks
+    pub track_identifiers: Option<Vec<[i32;3]>>,
+
+    /// how verbose to make output
+    /// should change to an enum
+    pub verbosity: Option<i32>,
+
+    /// weight cutoff for Russian roulette 
+    pub weight_cutoff: Option<f64>,
+
+    /// survival weight after Russian Roulette
+    pub weight_survive: Option<f64>,
+
+
 }
 
 #[derive(Debug,PartialEq, PartialOrd, Clone)]
