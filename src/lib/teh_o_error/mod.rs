@@ -54,6 +54,10 @@ pub enum TehOError {
     #[error("SystemTimeError")]
     SystemTimeError(SystemTimeError),
 
+    /// IO error 
+    #[error("IOError")]
+    IOError(std::io::Error),
+
 }
 
 impl From<SystemTimeError> for TehOError {
@@ -62,4 +66,9 @@ impl From<SystemTimeError> for TehOError {
     }
 }
 
+impl From<std::io::Error> for TehOError {
+    fn from(value: std::io::Error) -> Self {
+        TehOError::IOError(value)
+    }
+}
 

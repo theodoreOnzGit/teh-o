@@ -2,6 +2,8 @@ use std::{path::PathBuf, collections::HashSet};
 
 use uom::{si::{f64::*, energy::electronvolt, time::second, temperature_interval::degree_celsius, thermodynamic_temperature::kelvin}, ConstZero};
 
+pub mod openmc_xml_serde;
+
 #[derive(Debug,PartialEq, Clone)]
 pub struct OpenMCSettings {
     /// assumes tallies are spatially separate
