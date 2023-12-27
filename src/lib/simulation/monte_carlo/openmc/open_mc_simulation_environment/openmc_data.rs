@@ -15,6 +15,8 @@ pub struct OpenMCData {
     temperature_min: ThermodynamicTemperature,
     temperature_max: ThermodynamicTemperature,
     nuclide_map: Option<HashMap<String, i32>>,
+    // nuclides tbd,
+    // should be a vector of unique pointers of Nuclides
 }
 
 impl Default for OpenMCData {
