@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+hdf5 = { git = "https://github.com/aldanor/hdf5-rust.git" }
 serde = { version = "1.0.193", features = ["derive"] }
 serde-xml-rs = "0.6.0"
 thiserror = "1.0.51"
