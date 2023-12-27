@@ -4,6 +4,7 @@ use super::timer::Timer;
 
 
 pub mod openmc_settings;
+pub mod openmc_data;
 
 // replacement for the namespace "simulation" in C
 #[derive(Debug,Default,PartialEq, Clone)]

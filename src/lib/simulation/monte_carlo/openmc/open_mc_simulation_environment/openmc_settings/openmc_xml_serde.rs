@@ -13,7 +13,7 @@ pub fn read_file(filepath: PathBuf)-> Result<String, TehOError>{
 
 /// type for openmc settings file
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-struct OpenMCXMLSettings {
+struct OpenMCParsedXMLSettings {
     run_mode: String,
     particles: i32,
     batches: i32,
@@ -59,7 +59,7 @@ pub fn simplest_serde_test_openmc_xml(){
 
     let file_contents: String = read_file(test_settings_xml_filepath).unwrap();
 
-    let settings: OpenMCXMLSettings = from_str(&file_contents).unwrap();
+    let settings: OpenMCParsedXMLSettings = from_str(&file_contents).unwrap();
 
     assert_eq!(settings.particles, 1000);
     assert_eq!(settings.batches, 150);
@@ -77,7 +77,7 @@ pub fn tag_serde_test_openmc_xml(){
 
     let file_contents: String = read_file(test_settings_xml_filepath).unwrap();
 
-    let settings: OpenMCXMLSettings = from_str(&file_contents).unwrap();
+    let settings: OpenMCParsedXMLSettings = from_str(&file_contents).unwrap();
 
     assert_eq!(settings.run_mode, "eigenvalue".to_string());
     assert_eq!(settings.source.particle, "neutron".to_string());
@@ -99,7 +99,7 @@ pub fn string_to_float_vec_serde_test_openmc_xml(){
 
     let file_contents: String = read_file(test_settings_xml_filepath).unwrap();
 
-    let settings: OpenMCXMLSettings = from_str(&file_contents).unwrap();
+    let settings: OpenMCParsedXMLSettings = from_str(&file_contents).unwrap();
 
     // how do I parse multiple floating point numbers from 
     // this string??
