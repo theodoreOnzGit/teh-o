@@ -1,4 +1,7 @@
 use std::{path::PathBuf, collections::HashSet};
+use serde::Deserialize;
+use serde::Serialize;
+
 
 use uom::{si::{f64::*, energy::electronvolt, time::second, temperature_interval::degree_celsius, thermodynamic_temperature::kelvin}, ConstZero};
 
@@ -214,6 +217,7 @@ pub struct OpenMCSettings {
 }
 
 #[derive(Debug,PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize)]
 pub enum RunMode {
     FixedSource,
     Eigenvalue,
