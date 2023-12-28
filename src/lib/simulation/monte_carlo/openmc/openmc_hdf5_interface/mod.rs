@@ -112,5 +112,8 @@ pub fn read_u235_energy_dataset_by_name() -> Result<(), crate::teh_o_error::TehO
     let room_temp_dataset = energy_subgroup.dataset("/U235/energy/294K")?;
     assert_eq!(&room_temp_dataset.name(), "/U235/energy/294K");
 
+    // you can also access the file directly using the address.
+    let room_temp_dataset = file.dataset("/U235/energy/294K")?;
+    assert_eq!(&room_temp_dataset.name(), "/U235/energy/294K");
     Ok(())
 }
