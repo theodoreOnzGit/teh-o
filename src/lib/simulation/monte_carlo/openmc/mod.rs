@@ -5,3 +5,4 @@ pub mod timer;
 /// openmc
 pub mod open_mc_simulation_environment;
 pub mod openmc_nuclides;
+pub mod openmc_hdf5_interface;

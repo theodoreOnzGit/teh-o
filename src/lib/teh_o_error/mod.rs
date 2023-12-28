@@ -58,6 +58,10 @@ pub enum TehOError {
     #[error("IOError")]
     IOError(std::io::Error),
 
+    /// hdf5 error 
+    #[allow(non_camel_case_types)]
+    #[error("hdf5 error")]
+    hdf5Error(hdf5::Error),
 }
 
 impl From<SystemTimeError> for TehOError {
@@ -72,3 +76,8 @@ impl From<std::io::Error> for TehOError {
     }
 }
 
+impl From <hdf5::Error> for TehOError {
+    fn from(value: hdf5::Error) -> Self {
+        TehOError::hdf5Error(value)
+    }
+}
