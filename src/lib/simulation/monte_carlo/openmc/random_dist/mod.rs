@@ -36,3 +36,12 @@ pub fn maxwell_spectrum(T: f64, seed: &mut u64) -> Result<f64, TehOError> {
     return Ok(value);
 
 }
+
+pub fn watt_spectrum(a: f64, b: f64, seed: &mut u64) -> Result<f64, TehOError>{
+
+    let w: f64 =  maxwell_spectrum(a, seed)?;
+    let value = w + 0.25 * a * a * b +
+        uniform_distribution(-1.0, 1.0, seed)? * (a * a * b * w).sqrt();
+
+    return Ok(value);
+}
