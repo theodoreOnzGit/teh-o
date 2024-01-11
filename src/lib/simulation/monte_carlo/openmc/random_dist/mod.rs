@@ -45,3 +45,30 @@ pub fn watt_spectrum(a: f64, b: f64, seed: &mut u64) -> Result<f64, TehOError>{
 
     return Ok(value);
 }
+
+pub fn normal_variate(mean: f64, standard_deviation: f64, seed: &mut u64)
+    -> Result<f64, TehOError>{
+
+        // in openmc, there is a do while loop
+        // which means the code block executes once, before checking 
+        // the condition
+        // https://www.w3schools.com/cpp/cpp_do_while_loop.asp
+        //
+        // Rust does not have the same, but i can program the equivalent
+        let mut x: f64 = uniform_distribution(-1., 1., seed)?;
+        let mut y: f64= uniform_distribution(-1., 1., seed)?;
+        let mut r2: f64 = x * x + y * y;
+
+        while r2 > 1.0 || r2 == 0.0 {
+            x = uniform_distribution(-1., 1., seed)?;
+            y = uniform_distribution(-1., 1., seed)?;
+            r2 = x * x + y * y;
+        };
+
+        let z: f64 = (-2.0 * r2.log(E) / r2).sqrt();
+
+        return Ok(mean + standard_deviation * z * x);
+
+        
+
+    }
