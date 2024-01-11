@@ -57,3 +57,42 @@ pub fn ldexp(arg: f64, int: i64) -> Result<f64, TehOError>{
 
     return Ok(value);
 }
+
+/// The algorithm here to determine the parameters used to skip ahead is
+/// described in F. Brown, "Random Number Generation with Arbitrary Stride,"
+/// Trans. Am. Nucl. Soc. (Nov. 1994). This algorithm is able to skip ahead in
+/// O(log2(N)) operations instead of O(N). Basically, it computes parameters G
+/// and C which can then be used to find x_N = G*x_0 + C mod 2^M.
+///
+/// Still need to test
+pub fn future_seed(n: u64, seed: u64) -> Result<u64, TehOError>{
+
+    // initialise constants
+    let mut g = PRN_MULT;
+    let mut c = PRN_ADD;
+    let mut g_new: u64 = 1;
+    let mut c_new: u64 = 0;
+
+    // assign a local mutable n 
+    let mut local_n = n;
+    
+    while local_n > 0 {
+        //Check if least significant bit is 1 
+
+        if (local_n & 1) > 0 {
+            g_new *= g;
+            c_new = c_new * g + c;
+        }
+
+        c *= g + 1;
+        g *= g;
+
+        // Move bits right, dropping least significant bit 
+
+        local_n >>= 1;
+
+    };
+
+    return Ok(g_new * seed + c_new);
+
+}

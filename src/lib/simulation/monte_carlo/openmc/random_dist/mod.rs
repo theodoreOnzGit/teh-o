@@ -46,6 +46,7 @@ pub fn watt_spectrum(a: f64, b: f64, seed: &mut u64) -> Result<f64, TehOError>{
     return Ok(value);
 }
 
+/// Sample a normal variate using Marsaglia's polar volume method
 pub fn normal_variate(mean: f64, standard_deviation: f64, seed: &mut u64)
     -> Result<f64, TehOError>{
 
