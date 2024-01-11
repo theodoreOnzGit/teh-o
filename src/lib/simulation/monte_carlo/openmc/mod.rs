@@ -6,3 +6,7 @@ pub mod timer;
 pub mod open_mc_simulation_environment;
 pub mod openmc_nuclides;
 pub mod openmc_hdf5_interface;
+pub mod random_dist;
+/// linear congruential generator
+pub mod random_lcg;
+
