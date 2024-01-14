@@ -1,3 +1,4 @@
+use core::panic;
 use std::{ops::Deref, u128};
 
 use crate::teh_o_error::TehOError;
@@ -64,27 +65,36 @@ pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
     // and in page 44, it talks about taking some dropped bits to the 
     // power of other dropped bits similar to what we see in openmc
 
-    let bit_dropped_stuff: u128 = ((*seed  >> ((*seed >> 59 ) + 5 )) ^ *seed).into();
+    let bit_dropped_stuff: u64 = ((*seed  >> ((*seed >> 59 ) + 5 )) ^ *seed).into();
 
 
     // had a prior error with 'attempt to multiply with overflow'
     // probably means there are too many bits to fit in a u64,
-    // so I'll use u128
+    // so u64 is a huge integer but is like 2^64 
+    // 18446744073709551615
     let word: u128 = 
          bit_dropped_stuff as u128 * 12605985483714917081 as u128;
 
-    let result: u128 = (word >> 43 as u64) ^ word ;
+    //let bit_shifted_word = word >> 43;
+
+    let result: u128 = ((word >> 43 as u64) ^ word).try_into().unwrap();
+
+    let result_float: f64 = result as f64;
 
     // the ldexp (load exponent, is called)
     // it multiplies a floating point value arg by the number 2 raised to the exp power.
     // https://en.cppreference.com/w/c/numeric/math/ldexp
 
-    return ldexp(result as f64, -64);
+    //panic!("{}",result_float);
+    return ldexp(result_float, -64);
 }
 
 /// it multiplies a floating point value arg by the number 2 raised to the exp power.
 pub fn ldexp(arg: f64, int: i64) -> Result<f64, TehOError>{
-    let value: f64 = arg * (2.0 as f64).powf(int as f64);
+
+    let two_exp: f64 = (2.0 as f64).powf(int as f64);
+
+    let value: f64 = arg * two_exp;
 
     return Ok(value);
 }
