@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{ops::Deref, u128};
 
 use crate::teh_o_error::TehOError;
 
@@ -38,11 +38,42 @@ pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
     // It also means a bitwise exclusive or in Rust, so thankfully, it's 
     // mostly a copy/paste
     // https://doc.rust-lang.org/book/appendix-02-operators.html
+    //
+    // this part is buggy:
+    //
+    //let word: u64 = 
+    //    ((*seed  >> ((*seed >> 59 as u64) + 5 as u64)) ^ *seed) * 12605985483714917081 as u64;
 
-    let word: u64 = 
-        ((*seed  >> ((*seed >> 59 as u64) + 5 as u64)) ^ *seed) * 12605985483714917081 as u64;
+    //let result: u64 = (word >> 43 as u64) ^ word ;
+    //
+    // note that this is page 27/28 onwards of 
+    // @techreport{oneill:pcg2014,
+    //    title = "PCG: A Family of Simple Fast Space-Efficient Statistically Good
+    //    Algorithms for Random Number Generation", author = "Melissa E. O'Neill",
+    //    institution = "Harvey Mudd College",
+    //    address = "Claremont, CA",
+    //    number = "HMC-CS-2014-0905",
+    //    year = "2014",
+    //    month = Sep,
+    //    xurl = "https://www.cs.hmc.edu/tr/hmc-cs-2014-0905.pdf",
+    //}
+    //
+    // In that section, permutation functions are defined
+    //
+    // on page 32 specifically, it talks about dropping bits
+    // and in page 44, it talks about taking some dropped bits to the 
+    // power of other dropped bits similar to what we see in openmc
 
-    let result: u64 = (word >> 43 as u64) ^ word ;
+    let bit_dropped_stuff: u128 = ((*seed  >> ((*seed >> 59 ) + 5 )) ^ *seed).into();
+
+
+    // had a prior error with 'attempt to multiply with overflow'
+    // probably means there are too many bits to fit in a u64,
+    // so I'll use u128
+    let word: u128 = 
+         bit_dropped_stuff as u128 * 12605985483714917081 as u128;
+
+    let result: u128 = (word >> 43 as u64) ^ word ;
 
     // the ldexp (load exponent, is called)
     // it multiplies a floating point value arg by the number 2 raised to the exp power.

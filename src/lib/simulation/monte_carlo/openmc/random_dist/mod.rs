@@ -4,6 +4,7 @@ use std::f64::consts::PI;
 use crate::teh_o_error::TehOError;
 
 use super::random_lcg::prn;
+mod random_dist_tests;
 
 pub fn uniform_distribution(a: f64, b: f64, seed: &mut u64) -> Result<f64,TehOError>{
 
