@@ -15,6 +15,7 @@ pub fn uniform_distribution(a: f64, b: f64, seed: &mut u64) -> Result<f64,TehOEr
 }
 
 
+// stopped here, i have a bit overflow
 #[allow(non_snake_case)]
 pub fn maxwell_spectrum(T: f64, seed: &mut u64) -> Result<f64, TehOError> {
 
