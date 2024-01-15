@@ -7,7 +7,9 @@ edition = "2021"
 
 [dependencies]
 approx = "0.5.1"
-hdf5 = { git = "https://github.com/aldanor/hdf5-rust.git" }
+hdf5 = "0.8.1"
+netcdf = { version = "0.9.0", features = ["static"] }
+pyo3 = { version = "0.20.2", features = ["auto-initialize"] }
 serde = { version = "1.0.193", features = ["derive"] }
 serde-xml-rs = "0.6.0"
 thiserror = "1.0.51"
