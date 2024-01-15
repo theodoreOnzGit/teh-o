@@ -5,6 +5,7 @@
 
 
 
+
 ///```python
 /// def test_maxwell_spectrum():
 ///    prn_seed = 1
@@ -132,7 +133,7 @@ crate::teh_o_error::TehOError>{
 
     // perform 10,000 samples
 
-    for i in 0..num_samples {
+    for _i in 0..num_samples {
         let sample = normal_variate(mean, stdev, &mut prn_seed)?;
         samples.push(sample);
         
@@ -166,6 +167,8 @@ crate::teh_o_error::TehOError>{
     //
     use statest::ks::*;
     use statrs::distribution::Normal;
+    
+    // let's convert our sample to a distribution type
 
 
 
