@@ -34,6 +34,7 @@ pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
 
     wrapped_seed = Wrapping(PRN_MULT) * wrapped_seed + Wrapping(PRN_ADD);
 
+
     // permutate the output,
     // OpenMC usses some bit shifting magic here, so i don't know what's 
     // really going on, I'll just use it.
@@ -94,6 +95,10 @@ pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
     // https://en.cppreference.com/w/c/numeric/math/ldexp
 
     //panic!("{}",result_float);
+    // set the seed to be the wrapping seed amount
+    *seed = wrapped_seed.0;
+
+
     return ldexp(result_float, -64);
 }
 
