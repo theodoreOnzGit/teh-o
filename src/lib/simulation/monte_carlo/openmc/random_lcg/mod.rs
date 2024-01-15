@@ -1,5 +1,4 @@
-use core::panic;
-use std::{ops::Deref, u128};
+use std::{ops::Deref, num::Wrapping};
 
 use crate::teh_o_error::TehOError;
 
@@ -27,7 +26,13 @@ static PRN_STRIDE: u64 = 152917;
 pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
 
     // advance LCG
-    *seed = PRN_MULT * seed.deref() + PRN_ADD;
+    //
+    // OpenMC apparently uses wrapped arithmetic on purpose to permutate 
+    // the random numbers
+    let mut wrapped_seed: Wrapping<u64> = 
+        Wrapping(*seed);
+
+    wrapped_seed = Wrapping(PRN_MULT) * wrapped_seed + Wrapping(PRN_ADD);
 
     // permutate the output,
     // OpenMC usses some bit shifting magic here, so i don't know what's 
@@ -65,21 +70,24 @@ pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
     // and in page 44, it talks about taking some dropped bits to the 
     // power of other dropped bits similar to what we see in openmc
 
-    let bit_dropped_stuff: u64 = ((*seed  >> ((*seed >> 59 ) + 5 )) ^ *seed).into();
+    let bit_dropped_stuff: Wrapping<u64> = 
+        Wrapping(
+            (wrapped_seed.0  >> ((wrapped_seed.0 >> 59 ) + 5 )) ^ wrapped_seed.0
+            );
 
 
     // had a prior error with 'attempt to multiply with overflow'
     // probably means there are too many bits to fit in a u64,
     // so u64 is a huge integer but is like 2^64 
     // 18446744073709551615
-    let word: u128 = 
-         bit_dropped_stuff as u128 * 12605985483714917081 as u128;
+    let word: Wrapping<u64> = 
+         bit_dropped_stuff * Wrapping(12605985483714917081);
 
     //let bit_shifted_word = word >> 43;
 
-    let result: u128 = ((word >> 43 as u64) ^ word).try_into().unwrap();
+    let result: Wrapping<u64> = Wrapping((word.0 >> 43 ) ^ word.0);
 
-    let result_float: f64 = result as f64;
+    let result_float: f64 = result.0 as f64;
 
     // the ldexp (load exponent, is called)
     // it multiplies a floating point value arg by the number 2 raised to the exp power.
