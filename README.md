@@ -16,6 +16,10 @@ code.
 Some improvements I hope to include are unit safety, and cross platform 
 capability.
 
+## Pre-requisites
+
+1. cmake
+
 ## Nomenclature 
 
 It is named after a beloved local beverage, teh-o (or black tea in Hokkien).
