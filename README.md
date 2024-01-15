@@ -19,6 +19,11 @@ capability.
 ## Pre-requisites
 
 1. cmake
+2. Python 3.7 to Python 3.10 (3.11 is too recent, tested on arch-linux)
+3. Scipy
+
+
+Note that the python is only for use in OpenMC tests as scipy will be used.
 
 ## Nomenclature 
 

@@ -3,6 +3,8 @@
 
 
 
+
+
 ///```python
 /// def test_maxwell_spectrum():
 ///    prn_seed = 1
@@ -147,6 +149,27 @@ crate::teh_o_error::TehOError>{
     //// from scipy.stats import shapiro
     //let test_val = normal_variate(mean, stdev, &mut prn_seed)?;
 
+    // The Shapiro-Wilk test is used to check if a distribution is normal
+    // shapiro test is harder to find in Rust libraries,
+    //
+    // However, it is available in github repos:
+    // https://github.com/larsgw/stattest/blob/main/src/test/shapiro_wilk.rs
+    // stattest
+    //
+    // Nevertheless, I prefer to have it on crates.io 
+    // the closest thing is the Kolmogorov–Smirnov test 
+    // https://github.com/doraneko94/statest
+    // in the statest crate
+    //
+    // It tests whether a dataset matches a certain distribution 
+    // so, we can also use it to test if a distribution is normal
+    //
+    use statest::ks::*;
+    use statrs::distribution::Normal;
+
+
+
     //assert_eq!(ref_val,test_val);
     Ok(())
 }
+
