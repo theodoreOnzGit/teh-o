@@ -1,3 +1,5 @@
+use super::watt_spectrum;
+
 
 
 ///```python
@@ -26,6 +28,8 @@ pub fn test_maxwell_spectrum(){
 
 }
 
+// translation of test:
+//```python 
 //def test_watt_spectrum():
 //    prn_seed = 1
 //    a = 0.5
@@ -34,3 +38,15 @@ pub fn test_maxwell_spectrum(){
 //    test_val = openmc.lib.math.watt_spectrum(a, b, prn_seed)
 //
 //    assert ref_val == test_val
+//```
+#[test]
+pub fn test_watt_spectrum(){
+    let mut prn_seed: u64 = 1;
+    let a = 0.5;
+    let b = 0.75;
+    let ref_val = 0.30957476387766697;
+
+    let test_val = watt_spectrum(a, b, &mut prn_seed).unwrap();
+
+    assert_eq!(ref_val,test_val);
+}
