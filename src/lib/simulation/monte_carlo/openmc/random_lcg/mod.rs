@@ -81,6 +81,29 @@ pub fn prn(seed: &mut u64) -> Result<f64,TehOError> {
     // probably means there are too many bits to fit in a u64,
     // so u64 is a huge integer but is like 2^64 
     // 18446744073709551615
+    //
+    // To remedy this, I used the std::num::Wrapping 
+    // struct, which explicitly uses number wrapping for integer overflows 
+    // of u64 types similar to how openmc functions, except that 
+    // this is done explicitly.
+    //
+    // For example, u8 has a max value of 255,
+    // if we add 1, then we have 256. But u8 cannot contain the number 256
+    // as there are not enough bits. This is called integer overflow.
+    //
+    // For unsigned integers,
+    // the solution is that 255_u8 + 1_u8 = 0_u8 
+    //
+    // This means that we go all the way back from 255 to start from 0 
+    // again. This is called wrapping.
+    // 
+    // in C++, this happens automatically. For Rust, we consider integer 
+    // overflows undefined behaviour and we want to avoid it.
+    //
+    // However, we can still use it. But we must do so explicitly
+    // to do so, we need to use the Wrapping Struct:
+    //
+    //
     let word: Wrapping<u64> = 
          bit_dropped_stuff * Wrapping(12605985483714917081);
 
