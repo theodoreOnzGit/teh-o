@@ -118,7 +118,7 @@ pub fn test_normal_dist_part_one(){
 //     assert p > 0.05
 // ```
 #[test]
-pub fn test_normal_dist_shapiro_wilk() -> Result<(),
+pub fn test_normal_dist_kolmogorov_smirnov() -> Result<(),
 crate::teh_o_error::TehOError>{
 
     use crate::simulation::monte_carlo::openmc::random_dist::normal_variate;
@@ -126,16 +126,15 @@ crate::teh_o_error::TehOError>{
     let mut prn_seed: u64 = 1;
     let mean = 14.08;
     let stdev = 1.0; 
-    let ref_val = 14.08;
     let num_samples = 10000;
 
-    let mut samples: Vec<f64> = vec![];
+    let mut test_samples: Vec<f64> = vec![];
 
     // perform 10,000 samples
 
     for _i in 0..num_samples {
         let sample = normal_variate(mean, stdev, &mut prn_seed)?;
-        samples.push(sample);
+        test_samples.push(sample);
         
 
         // perform wrapping arithmetic on prn 
@@ -165,14 +164,44 @@ crate::teh_o_error::TehOError>{
     // It tests whether a dataset matches a certain distribution 
     // so, we can also use it to test if a distribution is normal
     //
-    use statest::ks::*;
     use statrs::distribution::Normal;
+    use rand::distributions::Distribution;
     
-    // let's convert our sample to a distribution type
+    let mut r = rand::thread_rng();
+    let n = Normal::new(mean, stdev).unwrap();
+
+    let mut reference_samples: Vec<f64> = vec![];
+
+    for _i in 0..num_samples {
+        let sample = n.sample(&mut r);
+        reference_samples.push(sample);
+    }
+
+    // now the reference samples are normal dist 
+    // and the test samples are also normal dist
+    //
+    // let's use the Kolmogorov Smirnov test rather than the
+    // Shapiro-Wilk test to check if both come from the same 
+    // normal distribution
+
+    // we use a 99% confidence level, 
+    // normally, 95% will do
+    let confidence = 0.99;
+
+    use kolmogorov_smirnov;
+
+    let result = kolmogorov_smirnov::test_f64(
+        &reference_samples, &test_samples, confidence);
+
+    if !result.is_rejected {
+        // in this case, we are 99% sure that both are from 
+        // the same distribution (ie normal)
+        return Ok(());
+    } else {
+        panic!("test failed, not normal distribution")
+    }
 
 
 
-    //assert_eq!(ref_val,test_val);
-    Ok(())
 }
 
