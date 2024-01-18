@@ -10,3 +10,5 @@ pub mod random_dist;
 /// linear congruential generator
 pub mod random_lcg;
 
+/// math functions, legendre polynomials and the like
+pub mod math_functions;

@@ -10,6 +10,7 @@ approx = "0.5.1"
 hdf5 = "0.8.1"
 kolmogorov_smirnov = "1.1.0"
 netcdf = { version = "0.9.0", features = ["static"] }
+peroxide = "0.34.3"
 rand = "0.8.5"
 serde = { version = "1.0.193", features = ["derive"] }
 serde-xml-rs = "0.6.0"
