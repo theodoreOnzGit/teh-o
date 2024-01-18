@@ -164,6 +164,20 @@ crate::teh_o_error::TehOError>{
     // It tests whether a dataset matches a certain distribution 
     // so, we can also use it to test if a distribution is normal
     //
+    // However, it is hard to find shaprio tests written in Rust in 
+    // crates.io
+    //
+    // In this case, I use the kolmogorov_smirnov crate which 
+    // performs the Kolmogorov Smirnov test. This test checks if 
+    // sets of data are from the same distribution.
+    //
+    // To check if the normal distribution is working, then I will 
+    // use the statrs and rand crates to get a normal distribution 
+    // with the number of samples described in num_samples
+    //
+    // Thereafter, I will use the test to check if both 
+    // came from the same normal distribution
+    // 
     use statrs::distribution::Normal;
     use rand::distributions::Distribution;
     
@@ -185,7 +199,12 @@ crate::teh_o_error::TehOError>{
     // normal distribution
 
     // we use a 99% confidence level, 
-    // normally, 95% will do
+    // normally, 95% will do, but I wanted to check if the test 
+    // was working correctly, 
+    // If it was not working correctly, it may be due to incorrect programming 
+    // such that if I were to set the confidence level to 100%, the 
+    // program can still pass. In the course of testing, I set 
+    // the confidence level to 1.00, then adjusted it to 0.95, 0.99 etc
     let confidence = 0.99;
 
     use kolmogorov_smirnov;
@@ -195,7 +214,8 @@ crate::teh_o_error::TehOError>{
 
     if !result.is_rejected {
         // in this case, we are 99% sure that both are from 
-        // the same distribution (ie normal)
+        // the same distribution (ie normal distributino with 
+        // mean of 14.08 and stdev of 1.0) using 10,000 samples
         return Ok(());
     } else {
         panic!("test failed, not normal distribution")
