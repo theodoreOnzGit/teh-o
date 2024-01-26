@@ -1,7 +1,6 @@
-use std::ops::{Add, Sub};
-
 use uom::si::f64::*;
-use uom::si::length::meter;
+pub mod math_ops;
+pub mod vector_ops;
 
 
 #[derive(Debug,PartialEq, PartialOrd, Copy, Clone)]
@@ -11,56 +10,12 @@ pub struct Position {
     z: Length,
 }
 
-impl Add for Position {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self {
-        let x2 = rhs.x;
-        let y2 = rhs.y;
-        let z2 = rhs.z;
-
-        let x1 = self.x;
-        let y1 = self.y;
-        let z1 = self.z;
-
-        let x = x1 + x2;
-        let y = y1 + y2;
-        let z = z1 + z2;
-
-        return Self {
-            x, y, z
-        };
-
-    }
-}
-
-impl Sub for Position {
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self {
-        let x2 = rhs.x;
-        let y2 = rhs.y;
-        let z2 = rhs.z;
-
-        let x1 = self.x;
-        let y1 = self.y;
-        let z1 = self.z;
-
-        let x = x1 - x2;
-        let y = y1 - y2;
-        let z = z1 - z2;
-
-        return Self {
-            x, y, z
-        };
-
-    }
-}
 
 
 #[test]
 pub fn test_position_math_ops(){
 
+    use uom::si::length::meter;
 
     let pos_1: Position = Position { 
         x: Length::new::<meter>(0.1), 
@@ -79,6 +34,27 @@ pub fn test_position_math_ops(){
         0.3, 
         epsilon = f64::EPSILON,
     );
-    let _pos_3 = pos_1 - pos_2;
+    assert_abs_diff_eq!(pos_3.y.get::<meter>(),
+        0.3, 
+        epsilon = f64::EPSILON,
+    );
+    assert_abs_diff_eq!(pos_3.z.get::<meter>(),
+        0.3, 
+        epsilon = f64::EPSILON,
+    );
 
+    let pos_3 = pos_1 - pos_2;
+
+    assert_abs_diff_eq!(pos_3.x.get::<meter>(),
+        -0.1, 
+        epsilon = f64::EPSILON,
+    );
+    assert_abs_diff_eq!(pos_3.y.get::<meter>(),
+        -0.1, 
+        epsilon = f64::EPSILON,
+    );
+    assert_abs_diff_eq!(pos_3.z.get::<meter>(),
+        -0.1, 
+        epsilon = f64::EPSILON,
+    );
 }
