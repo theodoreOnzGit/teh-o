@@ -12,3 +12,6 @@ pub mod random_lcg;
 
 /// math functions, legendre polynomials and the like
 pub mod math_functions;
+
+/// struct representing position of particle 
+pub mod position;
