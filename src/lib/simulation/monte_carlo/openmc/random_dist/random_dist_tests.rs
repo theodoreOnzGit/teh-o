@@ -218,7 +218,18 @@ crate::teh_o_error::TehOError>{
         // mean of 14.08 and stdev of 1.0) using 10,000 samples
         return Ok(());
     } else {
-        panic!("test failed, not normal distribution")
+        panic!("test failed, not normal distribution");
+        // not sure if there is a race condition here
+        // but the kolmogorov_smirnov test fails at some time but 
+        // passes most of the time. 
+        //
+        // There could be something wrong with the crate, or perhaps 
+        // that the thread random number generator is kaput
+        // or else it could be the bit shifting. 
+        // I'm really not sure.
+        //
+        // It was definitely not due to bacon or cargo-watch. Tested that 
+        // already
     }
 
 
