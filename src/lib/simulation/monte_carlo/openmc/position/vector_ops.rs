@@ -1,4 +1,4 @@
-use uom::si::f64::*;
+use uom::si::{f64::*, length::meter};
 
 use super::Position;
 
@@ -24,11 +24,11 @@ impl Position {
 
     /// cross product 
     #[inline]
-    pub fn cross(&self, rhs: &Self) -> [Area;3] {
+    pub fn cross(&self, rhs: &Self) -> [Length;3] {
 
-        let x = self.y * rhs.z - self.z * rhs.y;
-        let y = self.z * rhs.x - self.x * rhs.z;
-        let z = self.x * rhs.y - self.y * rhs.x;
+        let x = self.y * rhs.z.get::<meter>() - self.z * rhs.y.get::<meter>();
+        let y = self.z * rhs.x.get::<meter>() - self.x * rhs.z.get::<meter>();
+        let z = self.x * rhs.y.get::<meter>() - self.y * rhs.x.get::<meter>();
 
         return [x,y,z];
 
