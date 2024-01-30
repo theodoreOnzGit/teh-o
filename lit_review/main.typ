@@ -36,7 +36,50 @@ Moreover, if we want to consider burnup and fuel depletion, then Monte
 Carlo simulation is essential. Let us consider some methods for speeding 
 up Monte Carlo simulations for the purposes of MGXS generation.
 
+= Homogenisation Methods 
 
+The most straightforward of these methods is homogenisation. This is where 
+the double heterogeneity is eliminated from the pebble itself. Homogenisation 
+is not preferred because we lose information about the TRISO geometry. 
+Moreover, some of the spatial self shielding effects are lost when homogenising 
+TRISO fuel with its graphite matrix @Fratoni2008. 
+
+#let kinf = $k_infinity$
+
+However, homogenisation is still helpful because it offers significant 
+speed ups and makes the pebble bed simulation practical. Additionally,
+some of the spatial self shielding effects can be preserved through 
+two kinds of homogenisation. Firstly, Fratoni homogenised the TRISO shells 
+with the graphite matrix, but left the TRISO fuel kernels intact @Fratoni2008.
+This resulted in significant (25%) time saving compared to the original 
+TRISO geometry while #kinf changed by about 0.2 % @Fratoni2008. A 
+second class of methods is the reactivity-equivalent physical 
+transform (RPT), where the TRISO particles are homogenised into 
+a subregion of the pebble which could be a sphere or ring @Lou2020. The 
+radius of the sphere or ring is adjusted such that the #kinf of the 
+transformed pebble is equivalent to that of the original TRISO pebble.
+This would partially account for some of the spatial self shielding 
+effects, but would result in loss of information for the TRISO pebble.
+This is most evident in depletion calculations involving burnable poisons 
+and depletion. In the case of depletion calculations, RPT would have 
+to be performed judiciously to ensure that the burnable posion 
+concentrations deviate little from the fully doubly-heterogeneous
+system. This has motivated the development of several iterations and 
+improvements of the RPT method @Lou2021. While these methods are effective,
+the RPT homogenisation methods still need to be benchmarked against a fully 
+doubly-heterogeneous system to check if the depletion is accurate. If 
+different burnable poisons and fuels are used, then we must check if the 
+same variant of RPT method can work. This makes RPT an approximate method 
+which could be used in only a subset of geometries where it has been verified 
+and tested against a fully doubly-heterogeneous system. In this regard,
+we still need a fully doubly-heterogeneous simulation in order to benchmark 
+RPT.
+
+= Delta Tracking 
+
+Serpent uses a delta tracking methodology to speed up Monte Carlo simulations
+@Leppaenen2010. This has been used for HTR-10 simulations when 
+generating MGXS for the TORT-TD deterministic code @Setyawan2021.
 
 
 
