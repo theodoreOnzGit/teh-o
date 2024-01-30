@@ -99,15 +99,28 @@ next collision site without stopping the track at each boundary or surface
 @Leppaenen2015. For HTGR geometry, the speed up can be as high as 
 10 times compared to traditional surface tracking @Leppaenen2015. However,
 this method suffers from efficiency problems in regions with 
-localised heavy absorbers @Leppaenen2015. Therefore, the algorithm switches 
+localised heavy absorbers @Leppaenen2015, or even regions where cross sections 
+are relatively low in one region and relatively high in another. One 
+example is that of shielding, where geometry consists of highly 
+absorbing or scattering material adjacent to large volumes filled with air 
+@Leppaenen2017. Therefore, the algorithm switches 
 to one based on surface tracking near these absorbers @Leppaenen2015. 
+
+Moreover, one key mission of the Monte Carlo code for HTGR is in MGXS 
+generation. For delta tracking, we cannot use the track length estimator 
+to estimate cross sections @Leppaenen2017. All tallies must instead be 
+based on the, potentially less efficient, collision estimator, which needs 
+actual collision events in order to score in the tally @Leppaenen2017.
 Thus, we can see that Delta Tracking is not a silver bullet.
 
 
 Despite these drawbacks, Serpent has been successfully used for 
 HTR-10 simulations when generating MGXS for 
-the TORT-TD deterministic code @Setyawan2021. In simulating 
-doubly-heterogeneous geometries, the advantages outweigh 
+the TORT-TD deterministic code @Setyawan2021. This is likely because 
+the inefficiencies in the collision flux estimator are small. This is mainly 
+due to the fact that the number of collisions is comparable to the number 
+of neutron tracks @Leppaenen2017. Thus, for reactor physics applications
+and in doubly-heterogeneous geometries, the advantages outweigh 
 the drawbacks.
 
 = Surface Tracking Speedup methods 
