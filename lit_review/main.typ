@@ -17,7 +17,16 @@ In modelling pebble beds, whether in Fluoride salt cooled high temperature
 reactors (FHRs) or High Temperature Gas Cooled Reactors (HTGRs), we always 
 run into the problem of double heterogeneity due to the presence of TRISO 
 particles @Fratoni2008. This makes the time required for Monte Carlo 
-simulation excessively long. Therefore, there are requirements for 
+simulation excessively long. While we may want to simplify the analysis 
+of pebble beds via homogenisation methods, the pebbles and TRISO particles 
+are small with respect to neutron diffusion lengths @Satvat2021. Therefore, 
+neutron spectrum in each pebble is heavily influenced by that of adjacent 
+pebbles. Therefore, unit cell models are not as suitable for neutronics 
+analysis. The situation is further exacerbated by the fact that each adjacent 
+pebble may have different composition and temperature. This would then 
+further affect the neutron spectrum in adjacent pebbles, and therefore,
+power distribution and burnup rates. Hence, homogenisation is not quite 
+desirable for such cases. Therefore, there are requirements for 
 methods to speed up Monte Carlo simulation in doubly heterogeneous systems. 
 
 Now, of course, we can use deterministic methods to speed up simulation 
@@ -36,9 +45,13 @@ Moreover, if we want to consider burnup and fuel depletion, then Monte
 Carlo simulation is essential. Let us consider some methods for speeding 
 up Monte Carlo simulations for the purposes of MGXS generation.
 
+For this work, any work on Method of Characteristics is out of scope.
+
 = Homogenisation Methods 
 
-The most straightforward of these methods is homogenisation. This is where 
+While homogenisation is generally not desired for high fidelity, it is a 
+good starting point in simulating an approximate representation of a 
+doubly-heterogeneous pebble bed. This is where 
 the double heterogeneity is eliminated from the pebble itself. Homogenisation 
 is not preferred because we lose information about the TRISO geometry. 
 Moreover, some of the spatial self shielding effects are lost when homogenising 
@@ -113,6 +126,18 @@ group cross sections are used @Raffuzzi2023. This was explored in SCONE
 and was shown to accelerate calculations by 2.5 to 5 times. However it 
 was only performed on inactive cycles @Raffuzzi2023. 
 Therefore, the overall speed up was considerably less than 5 times.
+
+= Spatial Mesh Coarsening Methods 
+
+Kairos Power produced a generic FHR (gFHR) simulation based on separating 
+the pebbles into spectral zones @Satvat2021 similar to what is done in VSOP.
+The pebbles within each zone is assumed to experienced the same neutron 
+spectrum and temperature, or more precisely, the deviations of neutron 
+spectrum and temperature within each zone are small @Satvat2021. Therefore,
+each spectral zone can be represented by one pebble, thus reducing the cost 
+of simulation. This is essentially like mesh coarsening. 
+
+
 
 
 = Computer Memory, GPU and CPU Optimisation 
