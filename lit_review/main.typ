@@ -13,6 +13,31 @@
 
 = Introduction 
 
+In modelling pebble beds, whether in Fluoride salt cooled high temperature 
+reactors (FHRs) or High Temperature Gas Cooled Reactors (HTGRs), we always 
+run into the problem of double heterogeneity due to the presence of TRISO 
+particles @Fratoni2008. This makes the time required for Monte Carlo 
+simulation excessively long. Therefore, there are requirements for 
+methods to speed up Monte Carlo simulation in doubly heterogeneous systems. 
+
+Now, of course, we can use deterministic methods to speed up simulation 
+for reactor simulation. GeN-Foam uses this approach @Fiorina2017. 
+However, we still need Monte Carlo methods in 
+order to generate multi group cross sections (MGXS) for these simulations.
+Additionally, to ensure that these simulations are reasonably accurate, we 
+still need to benchmark these deterministic simulations against a 
+high fidelity simulation. These high fidelity simulations would usually 
+be Monte Carlo coupled directly to a thermal hydraulics solver such as 
+Cardinal, which uses OpenMC Monte Carlo code coupled with the NekRS thermal 
+hydraulics solver @Novak2022. This was used for a prismatic TRISO design 
+which was not as doubly heterogeneous as a TRISO pebble bed.
+Therefore, we still need to consider double heterogeneity in these cases.
+Moreover, if we want to consider burnup and fuel depletion, then Monte 
+Carlo simulation is essential. Let us consider some methods for speeding 
+up Monte Carlo simulations for the purposes of MGXS generation.
+
+
+
 
 
 = MGXS Generation
