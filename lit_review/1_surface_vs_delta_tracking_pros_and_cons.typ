@@ -97,6 +97,7 @@ a boundary.
 
 == Delta Tracking
 
+=== "Homogenisation" of Cross Sections 
 Now, suppose we could homogenise the cross sections so that we don't 
 care if the particle crosses the surface or not. For this case, 
 let's say for example that $Sigma_"t,fuel" > Sigma_"t,graphite"$. How 
@@ -113,12 +114,20 @@ actually ended up with.
 
 #image("sigma-total-and-deciding-rxns.jpg")
 
+In this regard, we do not care what kind of reaction we have until we 
+score an actual collision. 
+
+=== Homogenisation and Virtual Collisions
+
 What if we could use this system to homogenise the medium between the fuel 
-and graphite?
+and graphite? We have two different cross sections. Perhaps we can add both 
+of them together in order to make a new total cross section for both mediums.
 
 Perhaps, we could try:
 
 $ Sigma_"t,homogenised" = Sigma_"t,fuel" + Sigma_"t,graphite" $
+
+
 
 
 = 3. 
