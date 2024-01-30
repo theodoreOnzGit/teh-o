@@ -117,7 +117,7 @@ actually ended up with.
 In this regard, we do not care what kind of reaction we have until we 
 score an actual collision. 
 
-=== Homogenisation and Virtual Collisions
+=== Homogenisation, Virtual Collisions and the Majorant Cross Section
 
 What if we could use this system to homogenise the medium between the fuel 
 and graphite? We have two different cross sections. Perhaps we can add both 
@@ -127,7 +127,44 @@ Perhaps, we could try:
 
 $ Sigma_"t,homogenised" = Sigma_"t,fuel" + Sigma_"t,graphite" $
 
+Remember, we don't care what kind of reaction there is until we collide.
 
+#figure(image("./virtual-collisions.jpg"),
+caption: "virtual collisions")
+<fig:virtual-collisions>
+
+Let's say we homogenise the cross sections in this manner, we do not keep 
+track of whether we pass material boundaries. However, we do track collisions.
+Each time there is a collision, we check if the particle actually interacted 
+with the material based on the random number generator (RNG). This is 
+similar to how the RNG decides if collisions in a material are fission,
+parasitic absorption or scattering. The difference is that now, we are 
+deciding if the particle interacted with the material in the first place.
+
+If it didn't, as shown in #ref(<fig:virtual-collisions>), then the particle 
+did not collide at all, and we continue our calculations as per normal.
+This is known as a virtual collision. If it did interact, then we continue 
+our mechanisms for deciding reactions as per normal.
+
+An astute observer would recognise that homogenising cross sections in 
+this manner would do the job, but would be horrendously inefficient because 
+many of the collisions will be virtual. We can amend the scheme in 
+#ref(<fig:virtual-collisions>) such that instead of adding the cross 
+sections up, we take the maximum of both cross sections. This minimises 
+the number of virtual collisions, and therefore the wasted computation 
+power.
+
+$ Sigma_"t,homogenised" = max(Sigma_"t,fuel", Sigma_"t,graphite") $
+
+This allows us to minimise the number of virtual collisions and therefore 
+the number of times the RNG needs to be run.
+
+One last thing, the homogenised cross section is not named as such 
+in literature. It has a very "cheem" (profound sounding) name called 
+the Majorant cross section.
+
+
+$ Sigma_"majorant" = max(Sigma_"t,fuel", Sigma_"t,graphite") $
 
 
 = 3. 
