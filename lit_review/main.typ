@@ -78,8 +78,50 @@ RPT.
 = Delta Tracking 
 
 Serpent uses a delta tracking methodology to speed up Monte Carlo simulations
-@Leppaenen2010. This has been used for HTR-10 simulations when 
-generating MGXS for the TORT-TD deterministic code @Setyawan2021.
+@Leppaenen2010 based on rejection sampling @Leppaenen2015. This is used 
+where neutron mean free path is long compared to the spatial dimensions 
+of the geometry such as for the TRISO fuel in question. In delta tracking 
+routines in Serpent and Serpent2, the neutrons can be moved to their 
+next collision site without stopping the track at each boundary or surface 
+@Leppaenen2015. For HTGR geometry, the speed up can be as high as 
+10 times compared to traditional surface tracking @Leppaenen2015. However,
+this method suffers from efficiency problems in regions with 
+localised heavy absorbers @Leppaenen2015. Therefore, the algorithm switches 
+to one based on surface tracking near these absorbers @Leppaenen2015. 
+Thus, we can see that Delta Tracking is not a silver bullet.
+
+
+Despite these drawbacks, Serpent has been successfully used for 
+HTR-10 simulations when generating MGXS for 
+the TORT-TD deterministic code @Setyawan2021. In simulating 
+doubly-heterogeneous geometries, the advantages outweigh 
+the drawbacks.
+
+= Surface Tracking Speedup methods 
+
+Distance caching was used in SCONE, with a reported 7 to 20% speedup in 
+simulation time @Kowalski2021.
+
+= Energy Mesh Corasening and Multigroup Methods
+
+Energy mesh coarsening was considered as well @Raffuzzi2023, because 
+continuous energy spectrum for neutrons is computationally expensive.
+For the inactive cycles, we could use multigroup cross sections rather 
+than continuous cross sections for simulations so that we converge 
+the fission source. After the fission source converges, the continuous 
+group cross sections are used @Raffuzzi2023. This was explored in SCONE 
+and was shown to accelerate calculations by 2.5 to 5 times. However it 
+was only performed on inactive cycles @Raffuzzi2023. 
+Therefore, the overall speed up was considerably less than 5 times.
+
+
+= Computer Memory, GPU and CPU Optimisation 
+
+The other class of methods involves optimisation of code to optimise memory 
+usage, parallelisation and the use of the graphical processing unit (GPU).
+This is done in the rewrite from Serpent to Serpent2, where the program 
+was re-written to optimise memory usage, and to use OpenMP for parallelisation 
+@Leppaenen2015.
 
 
 
@@ -348,6 +390,12 @@ and that $D = (1/(3 Sigma_"a1"))$,
 Then the form of SP3 equations in GeN-Foam would be identical to that 
 of the second order sp3 equations in Larsen's work under the simplification 
 of linearly anisotropic scattering cross section.
+
+
+= Honourable Mentions
+
+Geant4 was used to model HTGRs as well @Cilliers2022, however, I could find 
+no novel method for speeding up simulations.
 
 
 
