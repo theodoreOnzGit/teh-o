@@ -9,6 +9,8 @@ pub struct surface_model {
 }
 
 
+// probably want to enum or trait over here
+// cannot direct copy C++ polymorphism
 pub struct Surface {
 
 }

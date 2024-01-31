@@ -7,9 +7,9 @@ pub mod vector_ops;
 
 #[derive(Debug,PartialEq, PartialOrd, Copy, Clone)]
 pub struct Position {
-    x: Length,
-    y: Length,
-    z: Length,
+    pub x: Length,
+    pub y: Length,
+    pub z: Length,
 }
 
 // For OpenMC, I found that it does poorly with TRISO particles due 
