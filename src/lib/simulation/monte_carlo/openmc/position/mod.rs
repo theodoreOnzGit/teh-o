@@ -1,4 +1,6 @@
 use uom::si::f64::*;
+
+use crate::teh_o_error::TehOError;
 pub mod math_ops;
 pub mod vector_ops;
 
@@ -106,5 +108,20 @@ pub struct Position {
 //
 // 
 
+impl Position {
+    
+    pub fn get(&self, index: u8) -> Result<Length, TehOError>{
+
+        let quantity = match index {
+            0 => self.x,
+            1 => self.y,
+            2 => self.z,
+            _ => return Err(TehOError::OpenMcErrOutOfBounds),
+        };
+
+        return Ok(quantity);
+    }
+
+}
 
 
