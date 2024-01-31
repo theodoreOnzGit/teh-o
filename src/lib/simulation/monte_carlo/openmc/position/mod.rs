@@ -124,4 +124,8 @@ impl Position {
 
 }
 
+/// OpenMC uses the type alias Direction as position as well
+/// I'm just copying this down
+pub type Direction = Position;
+
 
