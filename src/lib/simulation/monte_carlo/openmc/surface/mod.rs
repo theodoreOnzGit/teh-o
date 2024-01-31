@@ -73,3 +73,6 @@ pub trait SurfaceTraits {
 
 /// X, Y and Z Planes 
 pub mod xyz_planes;
+
+/// Generic Plane 
+pub mod generic_plane;

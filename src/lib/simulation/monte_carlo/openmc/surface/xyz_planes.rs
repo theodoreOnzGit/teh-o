@@ -5,7 +5,7 @@ use uom::si::length::centimeter;
 use super::SurfaceTraits;
 use crate::simulation::monte_carlo::openmc::position::{Position, Direction};
 
-
+#[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
 pub struct SurfaceXPlane {
     x0_: Length,
 }
@@ -26,6 +26,7 @@ impl SurfaceXPlane {
     // todo: bounding box
 }
 
+#[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
 pub struct SurfaceYPlane {
     y0_: Length,
 }
@@ -46,6 +47,7 @@ impl SurfaceYPlane {
     // todo: bounding box
 }
 
+#[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
 pub struct SurfaceZPlane {
     z0_: Length,
 }
