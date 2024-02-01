@@ -215,11 +215,12 @@ impl SurfaceXCylinder {
 }
 
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
-pub struct SurfaceYPlane {
+pub struct SurfaceYCylinder {
     y0_: Length,
+    //todo
 }
 
-impl SurfaceYPlane {
+impl SurfaceYCylinder {
 
     pub fn evaluate(&self, r: &Position) -> Length {
         return r.y - self.y0_;
@@ -236,11 +237,11 @@ impl SurfaceYPlane {
 }
 
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
-pub struct SurfaceZPlane {
+pub struct SurfaceZCylinder {
     z0_: Length,
 }
 
-impl SurfaceZPlane {
+impl SurfaceZCylinder {
 
     pub fn evaluate(&self, r: &Position) -> Length {
         return r.z - self.z0_;
