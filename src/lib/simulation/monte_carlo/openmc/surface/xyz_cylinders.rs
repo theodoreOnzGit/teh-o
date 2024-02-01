@@ -169,13 +169,16 @@ pub fn axis_aligned_cylinder_distance(
         // negative sign on sqrt(quad).
 
         return Ok((-k + quad.sqrt()) / a);
+    } else {
+        // Particle is outside the cylinder, thus both distances are either
+        // positive or negative. If positive, the smaller distance is the one
+        // with positive sign on sqrt(quad).
+        let d = (-k - quad.sqrt()) / a;
+        if d < Length::ZERO {
+            return Ok(infinite_length);
+        }
+        return Ok(d);
     }
-
-
-
-
-
-    todo!()
 
 }
 
