@@ -76,3 +76,6 @@ pub mod xyz_planes;
 
 /// Generic Plane 
 pub mod generic_plane;
+
+/// X, Y and Z Cylinders 
+pub mod xyz_cylinders;
