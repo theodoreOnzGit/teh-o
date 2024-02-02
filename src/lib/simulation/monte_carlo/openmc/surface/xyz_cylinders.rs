@@ -216,14 +216,19 @@ impl SurfaceXCylinder {
 
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
 pub struct SurfaceYCylinder {
-    y0_: Length,
+    x0_: Length,
+    z0_: Length,
+    radius_: Length,
     //todo
 }
 
 impl SurfaceYCylinder {
 
-    pub fn evaluate(&self, r: &Position) -> Length {
-        return r.y - self.y0_;
+    pub fn evaluate(&self, r: &Position) -> Result<Area, TehOError> {
+        return axis_aligned_cylinder_evaluate(
+            r,
+            0, 2,
+            self.x0_, self.z0_, self.radius_);
     }
 
     pub fn normal(&self) -> Direction {
@@ -238,13 +243,18 @@ impl SurfaceYCylinder {
 
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
 pub struct SurfaceZCylinder {
-    z0_: Length,
+    x0_: Length,
+    y0_: Length,
+    radius_: Length,
 }
 
 impl SurfaceZCylinder {
 
-    pub fn evaluate(&self, r: &Position) -> Length {
-        return r.z - self.z0_;
+    pub fn evaluate(&self, r: &Position) -> Result<Area,TehOError> {
+        return axis_aligned_cylinder_evaluate(
+            r,
+            0, 1,
+            self.x0_, self.y0_, self.radius_);
     }
 
     pub fn normal(&self) -> Direction {
