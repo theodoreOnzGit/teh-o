@@ -181,7 +181,7 @@ crate::teh_o_error::TehOError>{
     use statrs::distribution::Normal;
     use rand::distributions::Distribution;
     
-    let mut r = rand::thread_rng();
+    let mut r = rand::rngs::OsRng;
     let n = Normal::new(mean, stdev).unwrap();
 
     let mut reference_samples: Vec<f64> = vec![];
