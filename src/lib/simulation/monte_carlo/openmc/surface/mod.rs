@@ -79,3 +79,6 @@ pub mod generic_plane;
 
 /// X, Y and Z Cylinders 
 pub mod xyz_cylinders;
+
+/// Spheres 
+pub mod spheres;
