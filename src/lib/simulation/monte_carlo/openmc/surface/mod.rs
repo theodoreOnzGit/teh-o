@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use super::position::{Position, Direction};
 use uom::si::f64::*;
 
-pub struct surface_model {
+pub struct SurfaceModel {
     surface_map: HashMap<i64,i64>,
     // TBD: vector<unique_ptr<Surface>> surfaces;
 }

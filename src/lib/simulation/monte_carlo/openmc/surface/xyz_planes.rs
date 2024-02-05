@@ -2,7 +2,6 @@ use uom::si::f64::*;
 use uom::ConstZero;
 use uom::si::length::centimeter;
 
-use super::SurfaceTraits;
 use crate::simulation::monte_carlo::openmc::position::{Position, Direction};
 
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]

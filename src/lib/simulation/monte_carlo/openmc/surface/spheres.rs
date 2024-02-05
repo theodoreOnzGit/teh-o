@@ -1,10 +1,9 @@
-use uom::si::area::{square_centimeter, square_meter};
+use uom::si::area::square_meter;
 use uom::si::f64::*;
-use uom::si::ratio::ratio;
 use uom::ConstZero;
-use uom::si::length::{centimeter, meter};
+use uom::si::length::meter;
 
-use super::{SurfaceTraits, FP_COINCIDENT};
+use super::FP_COINCIDENT;
 use crate::{simulation::monte_carlo::openmc::position::{Position, Direction}, teh_o_error::TehOError};
 
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
@@ -115,10 +114,10 @@ impl SurfaceSphere {
         if quad < Area::ZERO {
             // No intersection with sphere.
             return Ok(infinite_length);
-        } else if (coincident || c.get::<square_meter>() < FP_COINCIDENT ) {
+        } else if coincident || c.get::<square_meter>() < FP_COINCIDENT  {
             // Particle is on the sphere, thus one distance is positive/negative and
             // the other is zero. The sign of k determines if we are facing in or out.
-            if (k.value >= 0.0) {
+            if k.value >= 0.0 {
                 return Ok(infinite_length);
             } else {
                 return Ok(-k + quad.sqrt()) ;

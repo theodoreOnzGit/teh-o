@@ -2,21 +2,16 @@
 use uom::si::f64::*;
 use uom::ConstZero;
 use uom::si::length::centimeter;
-
-use super::SurfaceTraits;
 use crate::simulation::monte_carlo::openmc::position::{Position, Direction};
 /// A general plane.
 ///
 /// The plane is described by the equation A x + B y + C z - D = 0
 #[derive(Debug,Clone,Copy,PartialEq, PartialOrd)]
+#[allow(non_snake_case)]
 pub struct SurfacePlane {
-    #[allow(non_snake_case)]
     A_: ReciprocalLength,
-    #[allow(non_snake_case)]
     B_: ReciprocalLength,
-    #[allow(non_snake_case)]
     C_: ReciprocalLength,
-    #[allow(non_snake_case)]
     D_: Ratio,
 }
 
