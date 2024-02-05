@@ -47,13 +47,8 @@ impl SurfaceSphere {
     pub fn axis_aligned_cylinder_distance(
         &self,
         r: &Position,
-        i1: u8,
-        i2: u8,
-        i3: u8,
         u: &Direction,
         coincident: bool,
-        offset1: Length,
-        offset2: Length,
         radius: Length,) -> Result<Length, TehOError>{
 
         //const double x = r.x - x0_;
