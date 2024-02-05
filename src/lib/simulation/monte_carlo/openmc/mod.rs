@@ -16,5 +16,9 @@ pub mod math_functions;
 /// struct representing position of particle 
 pub mod position;
 
-/// struct represening surfaces 
+/// structs represening surfaces 
 pub mod surface;
+
+/// structs representing particle data
+pub mod particle_data;
+pub mod particle;

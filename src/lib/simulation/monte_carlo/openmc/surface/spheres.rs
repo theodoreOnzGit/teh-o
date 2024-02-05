@@ -43,7 +43,7 @@ impl SurfaceSphere {
     // todo: bounding box
     //
 
-    pub fn axis_aligned_cylinder_distance(
+    pub fn distance(
         &self,
         r: &Position,
         u: &Direction,
