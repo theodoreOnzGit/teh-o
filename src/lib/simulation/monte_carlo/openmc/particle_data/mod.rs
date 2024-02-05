@@ -1,3 +1,5 @@
+use uom::si::f64::*;
+
 use super::position::Position;
 use super::position::Direction;
 
@@ -21,6 +23,21 @@ pub struct ParticleData {
     //  ParticleType& type() { return type_; }
     //  by default it is a neutron
     type_: ParticleType,
+
+    // from openmc 
+
+    //// Energy and temperature last used to evaluate these cross sections.  If
+    //// these values have changed, then the cross sections must be re-evaluated.
+    //double last_E {0.0};      //< Last evaluated energy
+    //double last_sqrtkT {0.0}; //< Last temperature in sqrt(Boltzmann constant
+    //                          //< * temperature (eV))
+    //
+    // no energy conversion required here since we store things as 
+    // dimensioned units rather than doubles
+    last_E: Energy,
+
+
+
 
 }
 
