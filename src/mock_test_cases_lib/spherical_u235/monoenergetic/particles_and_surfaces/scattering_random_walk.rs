@@ -1,33 +1,31 @@
+use uom::si::angle::radian;
 use uom::ConstZero;
 use uom::si::f64::*;
 use uom::si::ratio::ratio;
+use teh_o::simulation::monte_carlo::openmc::random_dist::uniform_distribution;
+
+pub type MacroscopicCrossSection = LinearNumberDensity;
+pub type MicroscopicCrossSection = Area;
 /// This test simulates one particle's random walk 
 /// in an infinite medium with isotropic scattering and an 
 /// absorption cross section
+///
+/// But with one guaranteed scattering reaction
 #[test]
 pub fn test2_random_walk_infinite_medium_scattering(){
 
+    // now, based on test 1, we note that we will be using 
+    // uniform distributions quite often to sample path lengths in 
+    // the medium and to move it to a new spot
+    //
+    //
     use uom::si::area::barn;
     use uom::si::mass_density::gram_per_cubic_centimeter;
     use uom::si::molar_mass::gram_per_mole;
-    use teh_o::simulation::monte_carlo::openmc::random_dist::uniform_distribution;
-    // first thing is that we want to simulate one single particle 
-    // in an infinite medium with a fixed arbitrary 
-    // macroscopic cross section fixed absorption cross section 
-    //
-    // we simulate the particle essentially until it is absorbed.
-    
-    // first things first, we need to simulate a particle with x,y,z 
-    // coordinates as well as a unit vector indicating its direction
-    // here it is: 
 
     let mut particle_1 = MockTestMonoenergeticParticle::default();
 
-    // now of course, we don't care about the energy of the particle 
-    // just yet, but we do care about its cross sections
-
-    // let's consider a u235 textbook example for one group fast neutrons
-    //
+    // For cross sections:
     // Lamarsh, John R., and Anthony John Baratta. 
     // Introduction to nuclear engineering. Vol. 3. 
     // Upper Saddle River, NJ: Prentice hall, 2001.
@@ -41,7 +39,6 @@ pub fn test2_random_walk_infinite_medium_scattering(){
     // ignoring inelastic scattering here
     
     let u235_scatter_xs: Area = Area::new::<barn>(2.839);
-    let u235_total_xs: Area = u235_abs_xs + u235_scatter_xs;
 
     // let's consider the density of u235 metal
     // https://en.wikipedia.org/wiki/Uranium
@@ -59,126 +56,29 @@ pub fn test2_random_walk_infinite_medium_scattering(){
     uranium_atom_density = 
         (uranium_density / uranium_molar_mass / one_particle).into();
 
-    let uranium_atom_density_per_cm3 = 
-        uranium_atom_density.get::<
-        uom::si::volumetric_number_density::per_cubic_centimeter>();
-
-    dbg!(uranium_atom_density_per_cm3);
-
-
-    // now let's get the macroscopic cross section 
-    //
-    // Sigma = n sigma
-    let u235_macro_total_xs: LinearNumberDensity = 
-        (uranium_atom_density * u235_total_xs).into();
-
-    dbg!(u235_macro_total_xs);
-    // now the thing is, we may want to use a type alias to define 
-    // macroscopic cross section and microscopic cross section for 
-    // ease of use 
-    //
-    // macroscopic cross section is in units of per meter 
-    // and microscopic cross section is in units of meter sq
-
-    pub type MacroscopicCrossSection = LinearNumberDensity;
-    pub type MicroscopicCrossSection = Area;
 
     let u235_total_xs: MicroscopicCrossSection = 
         u235_abs_xs + u235_scatter_xs;
     let u235_macro_total_xs: MacroscopicCrossSection = 
         (uranium_atom_density * u235_total_xs).into();
 
-    dbg!(&u235_macro_total_xs);
-
-    // now that we've gotten this, here's the procedure,
-    // take the particle with prevailing position and direction 
-    // estimate its length given a random variable, and move the 
-    // particle to its new location
-    
-    // first, let's sample how long it went
+    // we let the prn_seed be 5 now, so that it should cause the 
+    // particle_1 to scatter
+    let mut prn_seed: u64 = 5;
+    // now, based on test 1, we note that we will be using 
+    // uniform distributions quite often to sample path lengths in 
+    // the medium and to move it to a new spot
     //
-    // the way to sample is to use the formula:
-    //
-    // l = - 1/Sigma_t * ln (xi) 
-    //
-    // where xi is a random variable from 0 to 1
-    // 
-    // let's get ln(xi) first
-
-    
-    // now, for random variables, I already copied over some code 
-    // from OpenMC and translated it to Rust 
-
-    let mut prn_seed: u64 = 1;
-    // note that the distribution ranges from [0,1) where it does not 
-    // include 1, hence I will use 1 as the upper bound and subtract 
-    // a tiny amount
-    let lower_bound = 0_f64;
-    let upper_bound = 1_f64 - f64::EPSILON;
-    let xi: f64 = uniform_distribution(lower_bound, upper_bound, &mut prn_seed).unwrap();
-
-    // next, let's calculate ln(xi) 
-    let lnxi = xi.ln();
-
-    // now for the length 
-    // recip is reciprocal (1/x)
-    let mean_free_path: Length = u235_macro_total_xs.recip();
-    let sampled_length: Length = - mean_free_path * lnxi;
-
-    // now let's move particle_1 to a new location given its direction 
-
-    // first, the direction 
-    //
-    // probably want to have some methods automating this
-
-    let delta_x: Vec<Length> = particle_1.direction.iter().map(
-        |unit_direction| {
-            *unit_direction * sampled_length
-        }
-        ).collect();
-
-    particle_1.position[0] += delta_x[0];
-    particle_1.position[1] += delta_x[1];
-    particle_1.position[2] += delta_x[2];
+    // it's better in this case to encapsulate all these steps into a 
+    // random walk function or random walk travel function
+    particle_1.random_walk_travel(&mut prn_seed, u235_macro_total_xs);
 
     // let's see the particle's position 
     dbg!(&particle_1.position);
 
-    // next, I need to sample the reaction type.
-    // First question is whether we scatter or absorb
-    //
-    // we coded earlier: 
-    //
-    // let u235_scatter_xs: Area = Area::new::<barn>(2.839);
-    // let u235_total_xs: Area = u235_abs_xs + u235_scatter_xs;
-    //
-    let scatter_probability: Ratio = u235_scatter_xs/u235_total_xs;
+    let interaction = MockTestMonoenergeticParticle::
+        scatter_or_absorption_rng(&mut prn_seed, u235_total_xs, u235_scatter_xs);
 
-    // the scatter probability is somewhere from [0,1)
-    // so we'll need to take a random number from this range again with 
-    // the same upper and lower bound as before
-    let xi: f64 = uniform_distribution(lower_bound, upper_bound, &mut prn_seed).unwrap();
-
-    // for readability, we may want to use an enum to denote this 
-
-    #[derive(Debug)]
-    pub enum NeutronInteraction {
-        Scatter,
-        Absorption
-    }
-
-    let mut interaction :NeutronInteraction;
-    
-    if xi > scatter_probability.value {
-        // if it's more than scatter probability, we have absorption 
-        // event, terminate
-        interaction = NeutronInteraction::Absorption;
-    } else {
-
-        // else, we have more scattering
-        interaction = NeutronInteraction::Scatter;
-    }
-    dbg!(&xi);
     dbg!(&interaction);
 
     // now what do we do if there is absorption?
@@ -187,42 +87,64 @@ pub fn test2_random_walk_infinite_medium_scattering(){
     //
     // maybe I'll just have a count of how many absorptions there are. 
     // versus how many scatters
-    let mut absorption_count: u64 = 0;
-    let mut scatter_count: u64 = 0;
-
-    match interaction {
-        NeutronInteraction::Scatter => {
-            scatter_count += 1;
-        },
-        NeutronInteraction::Absorption => {
-            absorption_count += 1;
-            // for absorption, probably want to delete the particle 
-            // to free memory
-            drop(particle_1);
-        },
-    }
-    dbg!(&absorption_count);
-    dbg!(&scatter_count);
+    //
+    // for tally counting, I'll make a tally struct
+    let mut collision_tally = CollisionTally::default();
+    collision_tally.add_interaction_to_tally(interaction);
 
     // now, if iteration is scattering only, then we need to sample a 
     // new direction for the particle
     //
     // in continuous energy mode, we also need to sample a new energy
     // but we shan't bother with it
-    // 
+    //
+    // Another simplification we make is that the particle is essentially 
+    // at rest
     //
     // For this test, however, we didn't get a scattering interaction 
     // so I'll terminate the test here
+    //
+    // How shall we get a new direction??
+    //
+    // from the OpenMC docs, 
+    // https://docs.openmc.org/en/stable/methods/neutron_physics.html#sample-angle
+    //
+    // We assume isotropic scattering for simplicity. In this case,
+    // the scattering angle cosine is sampled using 
 
+    let xi = MockTestMonoenergeticParticle::
+        uniform_dist_zero_to_one_rng(&mut prn_seed);
+    let mu_scatter: f64 = 2_f64 * xi - 1.0;
 
+    // this should give a uniform distribution in [-1,1)
+    // and then we can sample the azimuthal angle randomly as well
+    //
+    // for this, we can sample sine theta (theta is azimuthal angle) 
+    // randomly from [-1,1) as well 
+
+    let xi = MockTestMonoenergeticParticle::
+        uniform_dist_zero_to_one_rng(&mut prn_seed);
+    let sine_theta: f64 = 2_f64 * xi - 1.0;
+
+    // now that we've gotten the angles, what next?
+    //
+    // first, we need to convert the coordinates to from cartesian to 
+    // polar 
+    //
+    // next, we need to change the polar coordinates, 
+    //
+    // third, we need to convert the polar coordinates back to cartesian
+
+    particle_1.obtain_new_direction_based_on_scatter_angle(
+        mu_scatter, sine_theta);
 
     
 
     // basically, to print output, I use an explicit panic, turn off if 
     // not using
-    let panic_debug: bool = false;
+    let panic_and_debug: bool = true;
 
-    if panic_debug {
+    if panic_and_debug {
         panic!();
     }
 
@@ -230,9 +152,141 @@ pub fn test2_random_walk_infinite_medium_scattering(){
 
 }
 
+
+#[derive(Debug)]
+pub enum NeutronInteraction {
+    Scatter,
+    Absorption
+}
+
 pub struct MockTestMonoenergeticParticle{
     pub position: [Length;3],
     pub direction: [Ratio;3],
+}
+
+impl MockTestMonoenergeticParticle {
+    pub fn random_walk_travel(&mut self, 
+        prn_seed: &mut u64,
+        u235_macro_total_xs: MacroscopicCrossSection) {
+        let lower_bound = 0_f64;
+        let upper_bound = 1_f64 - f64::EPSILON;
+        let xi: f64 = uniform_distribution(lower_bound, upper_bound, prn_seed).unwrap();
+
+        // next, let's calculate ln(xi) 
+        let lnxi = xi.ln();
+
+        // now for the length 
+        // recip is reciprocal (1/x)
+        let mean_free_path: Length = u235_macro_total_xs.recip();
+        let sampled_length: Length = - mean_free_path * lnxi;
+
+        // now let's move this particle to a new location given its direction 
+
+        // first, the direction 
+        //
+        // probably want to have some methods automating this
+
+        let delta_x: Vec<Length> = self.direction.iter().map(
+            |unit_direction| {
+                *unit_direction * sampled_length
+            }
+        ).collect();
+
+        self.position[0] += delta_x[0];
+        self.position[1] += delta_x[1];
+        self.position[2] += delta_x[2];
+
+    }
+
+    /// for convenience, I put the uniform distribution from 0 to 1 here
+    #[inline]
+    pub fn uniform_dist_zero_to_one_rng(prn_seed: &mut u64) -> f64 {
+        let lower_bound = 0_f64;
+        let upper_bound = 1_f64 - f64::EPSILON;
+        let xi: f64 = uniform_distribution(lower_bound, upper_bound, prn_seed).unwrap();
+
+        return xi;
+
+    }
+
+    /// for convenience, I also put the rng for scatter or absorption 
+    /// here 
+    #[inline] 
+    pub fn scatter_or_absorption_rng(prn_seed: &mut u64,
+        u235_total_xs: MicroscopicCrossSection,
+        u235_scatter_xs: MicroscopicCrossSection) -> NeutronInteraction {
+
+        let scatter_probability: Ratio = u235_scatter_xs/u235_total_xs;
+
+        // the scatter probability is somewhere from [0,1)
+        // so we'll need to take a random number from this range again with 
+        // the same upper and lower bound as before
+        let xi = MockTestMonoenergeticParticle::uniform_dist_zero_to_one_rng(
+            prn_seed);
+
+        if xi > scatter_probability.value {
+            // if it's more than scatter probability, we have absorption 
+            // event, terminate
+            return NeutronInteraction::Absorption;
+        } else {
+
+            // else, we have more scattering
+            return NeutronInteraction::Scatter;
+        }
+
+    }
+
+    // Obtains a new direction based on the scattering solid angle 
+    // based on mu_scatter, the cosine of the polar angle
+    // sine_theta, the sine of the azimuthal angle
+    #[inline] 
+    pub fn obtain_new_direction_based_on_scatter_angle(&mut self,
+        mu_scatter: f64,
+        sine_theta: f64){
+
+        // now let's determine the polar angle first,
+        // https://math.libretexts.org/Courses/Monroe_Community_College/MTH_212_Calculus_III/Chapter_11%3A_Vectors_and_the_Geometry_of_Space/11.7%3A_Cylindrical_and_Spherical_Coordinates
+        let x = self.position[0];
+        let y = self.position[1];
+        let z = self.position[2];
+
+        let rho_sq: Area = x * x + y * y + z * z;
+
+        let mu_particle: Ratio = z * rho_sq.sqrt().recip();
+        let tan_theta_particle: Ratio = y/x;
+
+        let polar_angle_particle = Angle::new::<radian>(
+            mu_particle.get::<ratio>().acos());
+        let azimuthal_angle_particle = Angle::new::<radian>(
+            tan_theta_particle.get::<ratio>().atan());
+
+        // now we can apply the two angles 
+        let polar_angle_scatter = Angle::new::<radian>(
+            mu_scatter.acos());
+        let azimuthal_angle_scatter = Angle::new::<radian>(
+            sine_theta.asin());
+
+        // the logic here needs to be considered, especially that for 
+        // the azimuthal angle since it ranges from 0 to 360
+        // TODO, check this
+        let new_polar_angle = polar_angle_particle + polar_angle_scatter;
+        let new_azimuthal_angle = azimuthal_angle_particle + 
+            2.0 * azimuthal_angle_scatter;
+
+        // now that we have the new angles, we can set the new directions
+
+        let sine_phi: Ratio = new_polar_angle.sin();
+        let cos_phi: Ratio = new_polar_angle.cos();
+        let sine_theta: Ratio = new_azimuthal_angle.sin();
+        let cos_theta: Ratio = new_azimuthal_angle.cos();
+
+        let x_new = sine_phi * cos_theta;
+        let y_new = sine_phi * sine_theta;
+        let z_new = cos_phi;
+
+        self.direction = [x_new,y_new,z_new];
+
+    }
 }
 
 impl Default for MockTestMonoenergeticParticle {
@@ -249,6 +303,65 @@ impl Default for MockTestMonoenergeticParticle {
             position: pos,
             direction: dir
         };
+    }
+}
+
+#[derive(Debug)]
+pub struct CollisionTally {
+    absorption_count: u64,
+    scatter_count: u64,
+}
+
+impl Default for CollisionTally {
+    /// start default with 0 counts each
+    fn default() -> Self {
+        Self { absorption_count: 0, scatter_count: 0 }
+    }
+}
+
+impl CollisionTally {
+
+    /// based on interaction type, add to tally 
+    pub fn add_interaction_to_tally(&mut self,
+        interaction: NeutronInteraction) {
+
+        match interaction {
+            NeutronInteraction::Scatter => {
+                self.add_to_scatter_count();
+            },
+            NeutronInteraction::Absorption => {
+                self.add_to_absorption_count();
+            },
+        }
+    }
+
+    /// add to absorption_count 
+    #[inline]
+    pub fn add_to_absorption_count(&mut self){
+        self.absorption_count += 1;
+    }
+    /// add to scatter_count 
+    #[inline]
+    pub fn add_to_scatter_count(&mut self){
+        self.scatter_count += 1;
+    }
+
+    /// reset absorption_count 
+    pub fn reset_absorption_count(&mut self){
+        self.absorption_count = 0;
+    }
+    /// reset scatter_count 
+    pub fn reset_scatter_count(&mut self){
+        self.scatter_count = 0;
+    }
+
+    /// get absorption count 
+    pub fn get_absorption_count(&self) -> u64 {
+        return self.absorption_count;
+    }
+    /// get scatter count 
+    pub fn get_scatter_count(&self) -> u64 {
+        return self.scatter_count;
     }
 }
 
