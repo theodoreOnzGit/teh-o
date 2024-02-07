@@ -26,5 +26,7 @@
 //
 // In this manner, we can test for several shapes and geometries 
 
-
+/// in this module, we discuss particles and surfaces, and how to model them 
+/// without any cross section access yet
+pub mod particles_and_surfaces;
 

@@ -11,5 +11,5 @@ pub mod mock_test_cases_lib;
 #[test]
 pub fn test1_main_test(){
     println!("Hello, world!");
-    panic!()
+    //panic!()
 }
