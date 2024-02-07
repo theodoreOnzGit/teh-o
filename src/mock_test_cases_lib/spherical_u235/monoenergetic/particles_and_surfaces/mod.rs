@@ -70,6 +70,20 @@ pub fn test1_random_walk_infinite_medium(){
     let u235_macro_total_xs: LinearNumberDensity = 
         (uranium_atom_density * u235_total_xs).into();
 
+    // now the thing is, we may want to use a type alias to define 
+    // macroscopic cross section and microscopic cross section for 
+    // ease of use 
+    //
+    // macroscopic cross section is in units of per meter 
+    // and microscopic cross section is in units of meter sq
+
+    pub type MacroscopicCrossSection = LinearNumberDensity;
+    pub type MicroscopicCrossSection = Area;
+
+    let u235_total_xs: MicroscopicCrossSection = 
+        u235_abs_xs + u235_scatter_xs;
+    let u235_macro_total_xs: MacroscopicCrossSection = 
+        (uranium_atom_density * u235_total_xs).into();
 
     dbg!(&u235_macro_total_xs);
 
