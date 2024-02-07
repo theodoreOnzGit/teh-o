@@ -29,6 +29,9 @@ pub fn test1_random_walk_infinite_medium(){
     // Introduction to nuclear engineering. Vol. 3. 
     // Upper Saddle River, NJ: Prentice hall, 2001.
     let u235_abs_xs: Area = Area::new::<barn>(1.65);
+    let _u235_fiss_xs: Area = Area::new::<barn>(1.4);
+    let _u235_n_gamma_xs: Area = Area::new::<barn>(0.25);
+    let _u235_transport_xs: Area = Area::new::<barn>(6.8);
 
 
 }
