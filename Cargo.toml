@@ -23,6 +23,10 @@ uom = "0.35.0"
 name = "main"
 path = "src/main.rs"
 
+[[bin]]
+name = "mock_test_cases"
+path = "src/mock_test_cases.rs"
+
 [lib]
 name = "teh_o"
 path = "src/lib/lib.rs"
