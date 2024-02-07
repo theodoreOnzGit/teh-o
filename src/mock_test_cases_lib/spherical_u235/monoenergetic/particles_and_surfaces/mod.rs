@@ -64,6 +64,8 @@ pub fn test1_random_walk_infinite_medium(){
         uranium_atom_density.get::<
         uom::si::volumetric_number_density::per_cubic_centimeter>();
 
+    dbg!(uranium_atom_density_per_cm3);
+
 
     // now let's get the macroscopic cross section 
     //
@@ -71,6 +73,7 @@ pub fn test1_random_walk_infinite_medium(){
     let u235_macro_total_xs: LinearNumberDensity = 
         (uranium_atom_density * u235_total_xs).into();
 
+    dbg!(u235_macro_total_xs);
     // now the thing is, we may want to use a type alias to define 
     // macroscopic cross section and microscopic cross section for 
     // ease of use 
@@ -141,6 +144,9 @@ pub fn test1_random_walk_infinite_medium(){
 
     // let's see the particle's position 
     dbg!(&particle_1.position);
+
+    // next, I need to sample the reaction type.
+    // First question is whether we scatter or absorb
     
 
     // basically, to print output, I use an explicit panic, turn off if 
