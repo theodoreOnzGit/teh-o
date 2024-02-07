@@ -1,3 +1,4 @@
+
 use uom::ConstZero;
 use uom::si::f64::*;
 use uom::si::ratio::ratio;
@@ -9,8 +10,8 @@ pub fn test1_random_walk_infinite_medium(){
 
     use uom::si::area::barn;
     use uom::si::mass_density::gram_per_cubic_centimeter;
-    use uom::si::amount_of_substance::mole;
     use uom::si::molar_mass::gram_per_mole;
+    use teh_o::simulation::monte_carlo::openmc::random_dist::uniform_distribution;
     // first thing is that we want to simulate one single particle 
     // in an infinite medium with a fixed arbitrary 
     // macroscopic cross section fixed absorption cross section 
@@ -21,7 +22,7 @@ pub fn test1_random_walk_infinite_medium(){
     // coordinates as well as a unit vector indicating its direction
     // here it is: 
 
-    let particle_1 = MockTestMonoenergeticParticle::default();
+    let mut particle_1 = MockTestMonoenergeticParticle::default();
 
     // now of course, we don't care about the energy of the particle 
     // just yet, but we do care about its cross sections
@@ -86,6 +87,61 @@ pub fn test1_random_walk_infinite_medium(){
         (uranium_atom_density * u235_total_xs).into();
 
     dbg!(&u235_macro_total_xs);
+
+    // now that we've gotten this, here's the procedure,
+    // take the particle with prevailing position and direction 
+    // estimate its length given a random variable, and move the 
+    // particle to its new location
+    
+    // first, let's sample how long it went
+    //
+    // the way to sample is to use the formula:
+    //
+    // l = - 1/Sigma_t * ln (xi) 
+    //
+    // where xi is a random variable from 0 to 1
+    // 
+    // let's get ln(xi) first
+
+    
+    // now, for random variables, I already copied over some code 
+    // from OpenMC and translated it to Rust 
+
+    let mut prn_seed: u64 = 1;
+    // note that the distribution ranges from [0,1) where it does not 
+    // include 1, hence I will use 1 as the upper bound and subtract 
+    // a tiny amount
+    let lower_bound = 0_f64;
+    let upper_bound = 1_f64 - f64::EPSILON;
+    let xi: f64 = uniform_distribution(lower_bound, upper_bound, &mut prn_seed).unwrap();
+
+    // next, let's calculate ln(xi) 
+    let lnxi = xi.ln();
+
+    // now for the length 
+    // recip is reciprocal (1/x)
+    let mean_free_path: Length = u235_macro_total_xs.recip();
+    let sampled_length: Length = - mean_free_path * lnxi;
+
+    // now let's move particle_1 to a new location given its direction 
+
+    // first, the direction 
+    //
+    // probably want to have some methods automating this
+
+    let delta_x: Vec<Length> = particle_1.direction.iter().map(
+        |unit_direction| {
+            *unit_direction * sampled_length
+        }
+        ).collect();
+
+    particle_1.position[0] += delta_x[0];
+    particle_1.position[1] += delta_x[1];
+    particle_1.position[2] += delta_x[2];
+
+    // let's see the particle's position 
+    dbg!(&particle_1.position);
+    
 
 
     panic!();
