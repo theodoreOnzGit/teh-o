@@ -143,8 +143,13 @@ pub fn test1_random_walk_infinite_medium(){
     dbg!(&particle_1.position);
     
 
+    // basically, to print output, I use an explicit panic, turn off if 
+    // not using
+    let panic_debug: bool = false;
 
-    panic!();
+    if panic_debug {
+        panic!();
+    }
 
 
 
