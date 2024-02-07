@@ -38,7 +38,11 @@ pub fn test2_random_walk_infinite_medium_scattering(){
     // https://wwwndc.jaea.go.jp/cgi-bin/Tab80WWW.cgi?lib=J40&iso=U235
     // ignoring inelastic scattering here
     
-    let u235_scatter_xs: Area = Area::new::<barn>(2.839);
+    let mut u235_scatter_xs: Area = Area::new::<barn>(2.839);
+    // for testing, let's artificially increase scattering xs 10 times 
+    dbg!(&u235_scatter_xs);
+    u235_scatter_xs *= 10.0;
+    dbg!(&u235_scatter_xs);
 
     // let's consider the density of u235 metal
     // https://en.wikipedia.org/wiki/Uranium
@@ -76,7 +80,7 @@ pub fn test2_random_walk_infinite_medium_scattering(){
     // let's see the particle's position 
     dbg!(&particle_1.position);
 
-    let interaction = MockTestMonoenergeticParticle::
+    let mut interaction = MockTestMonoenergeticParticle::
         scatter_or_absorption_rng(&mut prn_seed, u235_total_xs, u235_scatter_xs);
 
     dbg!(&interaction);
@@ -134,15 +138,59 @@ pub fn test2_random_walk_infinite_medium_scattering(){
     // next, we need to change the polar coordinates, 
     //
     // third, we need to convert the polar coordinates back to cartesian
+    //
+    // all these is contained within the function 
+    // obtain_new_direction_based_on_scatter_angle
 
     particle_1.obtain_new_direction_based_on_scatter_angle(
         mu_scatter, sine_theta);
+
+    // now, let us repeat until there is no particle left 
+
+
+
+    while interaction == NeutronInteraction::Scatter {
+
+        // if scattering, then we sample new distance 
+        particle_1.random_walk_travel(&mut prn_seed, u235_macro_total_xs);
+
+        // check the interaction there
+        interaction = MockTestMonoenergeticParticle::
+            scatter_or_absorption_rng(&mut prn_seed, u235_total_xs, u235_scatter_xs);
+
+        // score the collision tally 
+        collision_tally.add_interaction_to_tally(interaction);
+
+        if interaction == NeutronInteraction::Scatter {
+            // get new direction if it is scattering 
+
+            let xi = MockTestMonoenergeticParticle::
+                uniform_dist_zero_to_one_rng(&mut prn_seed);
+            let mu_scatter: f64 = 2_f64 * xi - 1.0;
+
+            let xi = MockTestMonoenergeticParticle::
+                uniform_dist_zero_to_one_rng(&mut prn_seed);
+            let sine_theta: f64 = 2_f64 * xi - 1.0;
+
+
+            particle_1.obtain_new_direction_based_on_scatter_angle(
+                mu_scatter, sine_theta);
+        }
+
+
+        if interaction == NeutronInteraction::Absorption {
+            // print particle 1 statistics, and delete it
+            dbg!(particle_1);
+            dbg!(collision_tally);
+            break;
+        }
+    }
 
     
 
     // basically, to print output, I use an explicit panic, turn off if 
     // not using
-    let panic_and_debug: bool = true;
+    let panic_and_debug: bool = false;
 
     if panic_and_debug {
         panic!();
@@ -153,12 +201,13 @@ pub fn test2_random_walk_infinite_medium_scattering(){
 }
 
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum NeutronInteraction {
     Scatter,
     Absorption
 }
 
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct MockTestMonoenergeticParticle{
     pub position: [Length;3],
     pub direction: [Ratio;3],
