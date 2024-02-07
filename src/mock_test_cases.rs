@@ -7,3 +7,9 @@ fn main() {
 /// that don't require classes and such
 /// just for the understanding of Monte Carlo
 pub mod mock_test_cases_lib;
+
+#[test]
+pub fn test1_main_test(){
+    println!("Hello, world!");
+    panic!()
+}
