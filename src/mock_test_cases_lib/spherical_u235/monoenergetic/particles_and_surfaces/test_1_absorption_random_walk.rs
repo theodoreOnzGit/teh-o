@@ -167,7 +167,7 @@ pub fn test1_random_walk_infinite_medium_absorption(){
         Absorption
     }
 
-    let mut interaction :NeutronInteraction;
+    let interaction: NeutronInteraction;
     
     if xi > scatter_probability.value {
         // if it's more than scatter probability, we have absorption 
