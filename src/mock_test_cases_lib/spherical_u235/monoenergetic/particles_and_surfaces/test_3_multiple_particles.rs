@@ -65,14 +65,14 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
     // particle_1 to scatter first
     // set the tally and interaction
     let mut collision_tally = CollisionTally::default();
-    let mut interaction = NeutronInteraction::Scatter;
+    let mut interaction = NeutronInteraction::_Scatter;
 
     // pseudorandom number generator seed
     let mut prn_seed: u64 = 5;
 
     // for each particle, this loop needs to be performed
 
-    while interaction == NeutronInteraction::Scatter {
+    while interaction == NeutronInteraction::_Scatter {
 
         // if scattering, then we sample new distance 
         particle_1.random_walk_travel(&mut prn_seed, u235_macro_total_xs);
@@ -84,7 +84,7 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
         // score the collision tally 
         collision_tally._add_interaction_to_tally(interaction);
 
-        if interaction == NeutronInteraction::Scatter {
+        if interaction == NeutronInteraction::_Scatter {
             // get new direction if it is scattering 
             // but I'll abstract this into a isotropic scattering function
 
@@ -95,7 +95,7 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
         }
 
 
-        if interaction == NeutronInteraction::Absorption {
+        if interaction == NeutronInteraction::_Absorption {
             // print particle 1 statistics, and delete it
             //dbg!(particle_1);
             //dbg!(collision_tally);
@@ -105,7 +105,7 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
 
     // let's repeat for 1000 particles
     let mut collision_tally = CollisionTally::default();
-    let mut interaction = NeutronInteraction::Scatter;
+    let mut interaction = NeutronInteraction::_Scatter;
     let neutron = MockTestMonoenergeticParticle::default();
     
     // I'll clone this 1000 times
@@ -118,7 +118,7 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
     dbg!(&neutron_vector.len());
 
     for neutron_ref in neutron_vector.iter_mut(){
-        while interaction == NeutronInteraction::Scatter {
+        while interaction == NeutronInteraction::_Scatter {
 
             // if scattering, then we sample new distance 
             neutron_ref.random_walk_travel(&mut prn_seed, u235_macro_total_xs);
@@ -130,12 +130,12 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
             // score the collision tally 
             collision_tally._add_interaction_to_tally(interaction);
 
-            if interaction == NeutronInteraction::Scatter {
+            if interaction == NeutronInteraction::_Scatter {
                 // get new direction if it is scattering 
                 // but I'll abstract this into a isotropic scattering function
                 neutron_ref.isotropically_scatter(
                     &mut prn_seed);
-            } else if interaction == NeutronInteraction::Absorption {
+            } else if interaction == NeutronInteraction::_Absorption {
                 // print particle 1 statistics, and delete it
                 //dbg!(&neutron_ref);
                 //dbg!(&collision_tally);
@@ -145,7 +145,7 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
         // because after neutron is absorbed, the interaction is absorption 
         // and then , the loop 
         // won't follow through
-        interaction = NeutronInteraction::Scatter;
+        interaction = NeutronInteraction::_Scatter;
     }
 
     // after this, we are done with the collision tally,
@@ -188,8 +188,8 @@ pub fn test3_random_walk_infinite_medium_scattering_many_particle(){
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum NeutronInteraction {
-    Scatter,
-    Absorption
+    _Scatter,
+    _Absorption
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -261,11 +261,11 @@ impl MockTestMonoenergeticParticle {
         if xi > scatter_probability.value {
             // if it's more than scatter probability, we have absorption 
             // event, terminate
-            return NeutronInteraction::Absorption;
+            return NeutronInteraction::_Absorption;
         } else {
 
             // else, we have more scattering
-            return NeutronInteraction::Scatter;
+            return NeutronInteraction::_Scatter;
         }
 
     }
@@ -377,10 +377,10 @@ impl CollisionTally {
         interaction: NeutronInteraction) {
 
         match interaction {
-            NeutronInteraction::Scatter => {
+            NeutronInteraction::_Scatter => {
                 self._add_to_scatter_count();
             },
-            NeutronInteraction::Absorption => {
+            NeutronInteraction::_Absorption => {
                 self._add_to_absorption_count();
             },
         }

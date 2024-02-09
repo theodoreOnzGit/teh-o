@@ -396,20 +396,20 @@ impl CollisionTally {
     }
 
     /// reset absorption_count 
-    pub fn reset_absorption_count(&mut self){
+    pub fn _reset_absorption_count(&mut self){
         self.absorption_count = 0;
     }
     /// reset scatter_count 
-    pub fn reset_scatter_count(&mut self){
+    pub fn _reset_scatter_count(&mut self){
         self.scatter_count = 0;
     }
 
     /// get absorption count 
-    pub fn get_absorption_count(&self) -> u64 {
+    pub fn _get_absorption_count(&self) -> u64 {
         return self.absorption_count;
     }
     /// get scatter count 
-    pub fn get_scatter_count(&self) -> u64 {
+    pub fn _get_scatter_count(&self) -> u64 {
         return self.scatter_count;
     }
 }
