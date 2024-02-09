@@ -15,3 +15,7 @@ mod test_2_scattering_random_walk;
 ///
 /// we want to do this for about 10,000 particles.
 mod test_3_multiple_particles;
+
+/// Example 4 
+mod test_4_multiple_particles_parallel;
+
