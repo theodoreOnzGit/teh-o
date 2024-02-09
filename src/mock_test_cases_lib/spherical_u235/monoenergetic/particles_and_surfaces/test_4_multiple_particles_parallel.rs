@@ -25,7 +25,6 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
     use rayon::iter::ParallelIterator;
     use rayon::iter::IntoParallelRefMutIterator;
 
-    let mut particle_1 = MockTestMonoenergeticParticle::default();
 
     // For cross sections:
     // Lamarsh, John R., and Anthony John Baratta. 
@@ -67,18 +66,34 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
 
 
     // pseudorandom number generator seed
-    let mut prn_seed: u64 = 5;
+    let mut global_prn_seed: u64 = 5;
 
 
 
 
-    // let's repeat for 1000 particles
-    let mut collision_tally = CollisionTally::default();
+    let collision_tally = CollisionTally::default();
     let neutron = MockTestMonoenergeticParticle::default();
     
-    // I'll clone this 1000 times
-    
-    let mut simulation_vector = vec![(neutron, prn_seed, collision_tally);1000];
+    // Let's do 10000 particles
+    let mut simulation_vector = vec![(neutron, global_prn_seed, collision_tally);10000];
+
+    // however, I cannot be using the same pseudorandom number seed 
+    // let me have a random distribution of seeds starting from 0 
+    // all the way to the max of u64
+
+    for (_neutron, prn_seed_clone, _collision_tally) in 
+        simulation_vector.iter_mut(){
+            // generate a random number from 0 to max u64 using the 
+            // global_prn_seed
+            // I'll use the openmc implementation of a uniform distribution
+
+            let seed: u64 = uniform_distribution(
+                0.0, u64::MAX as f64, &mut global_prn_seed).unwrap()
+                .ceil()
+                .to_bits();
+
+            *prn_seed_clone = seed;
+        }
 
     // I'll then perform monte carlo simulations in series first
     // This can be a map function 
