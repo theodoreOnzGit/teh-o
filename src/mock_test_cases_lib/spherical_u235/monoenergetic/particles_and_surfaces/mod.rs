@@ -24,3 +24,9 @@ mod test_3_multiple_particles;
 ///
 mod test_4_multiple_particles_parallel;
 
+/// Example 5 
+///
+/// as in OpenMC, we also should have multiple batches,
+/// usually 200 
+mod test_5_multiple_batches;
+
