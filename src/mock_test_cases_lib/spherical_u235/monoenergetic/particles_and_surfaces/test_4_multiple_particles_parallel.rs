@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use uom::si::angle::radian;
 use uom::ConstZero;
 use uom::si::f64::*;
@@ -73,13 +75,16 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
 
     let collision_tally = CollisionTally::default();
     let neutron = MockTestMonoenergeticParticle::default();
-    
     // Let's do 10000 particles
-    let mut simulation_vector = vec![(neutron, global_prn_seed, collision_tally);10000];
+    let number_of_particles = 10000;
+    
+    let mut simulation_vector = vec![(neutron, global_prn_seed, collision_tally);number_of_particles];
 
     // however, I cannot be using the same pseudorandom number seed 
     // let me have a random distribution of seeds starting from 0 
     // all the way to the max of u64
+
+    let prn_seed_generator_timer = SystemTime::now();
 
     for (_neutron, prn_seed_clone, _collision_tally) in 
         simulation_vector.iter_mut(){
@@ -95,6 +100,9 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
             *prn_seed_clone = seed;
         }
 
+    dbg!(prn_seed_generator_timer.elapsed().unwrap());
+
+
     // I'll then perform monte carlo simulations in series first
     // This can be a map function 
     //
@@ -108,6 +116,8 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
     //
     // next thing i need to do is to give a mutable reference to the 
     // global pseudorandom number generator seed
+    
+    let one_batch_simulation_timer = SystemTime::now();
 
     let sim_vector_finished: Vec<(
         MockTestMonoenergeticParticle,
@@ -160,6 +170,14 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
         (neutron_ref.clone(), prn_seed.clone(), collision_tally.clone())
     }).collect();
 
+    let time_per_particle = one_batch_simulation_timer.elapsed().unwrap()/
+        number_of_particles as u32;
+    dbg!(one_batch_simulation_timer.elapsed().unwrap());
+    
+    dbg!(time_per_particle);
+
+    let tally_timer = SystemTime::now();
+
     let absorptions: Vec<u64> = sim_vector_finished.par_iter().map(
         |(_neutron_ref, _prn_seed, collision_tally)|{ 
             collision_tally._absorption_count
@@ -174,6 +192,9 @@ pub fn test4b_random_walk_infinite_medium_scattering_many_particle_iterator(){
 
     let absorption_count: u64 = absorptions.iter().sum();
     let scatter_count: u64 = scatterings.iter().sum();
+
+    dbg!(tally_timer.elapsed().unwrap());
+
 
     // now the scatter to absorption_count is quite important to note 
     // ideally, we should get the statistics equal, or at least similar to their 
@@ -312,7 +333,8 @@ pub fn test4a_random_walk_infinite_medium_scattering_many_particle_iterator_non_
     
     // I'll clone this 1000 times
     
-    let neutron_vector = vec![neutron;1000];
+    let number_of_particles = 1000;
+    let neutron_vector = vec![neutron;number_of_particles];
 
     // I'll then perform monte carlo simulations in series first
     // This can be a map function 
@@ -325,6 +347,7 @@ pub fn test4a_random_walk_infinite_medium_scattering_many_particle_iterator_non_
     // what I can do though, is to allocate clone new neutrons into a 
     // vector
 
+    let one_batch_simulation_timer = SystemTime::now();
     for neutron_ref in neutron_vector.iter(){
         while interaction == NeutronInteraction::_Scatter {
 
@@ -357,6 +380,11 @@ pub fn test4a_random_walk_infinite_medium_scattering_many_particle_iterator_non_
         // won't follow through
         interaction = NeutronInteraction::_Scatter;
     }
+
+    let time_per_particle = one_batch_simulation_timer.elapsed().unwrap() / 
+        number_of_particles as u32;
+
+    dbg!(time_per_particle);
 
     // after this, we are done with the collision tally,
     // let's read the samples

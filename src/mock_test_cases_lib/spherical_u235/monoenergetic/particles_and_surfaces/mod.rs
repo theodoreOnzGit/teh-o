@@ -17,5 +17,10 @@ mod test_2_scattering_random_walk;
 mod test_3_multiple_particles;
 
 /// Example 4 
+/// This is multiple particle doing a random walk in an infinite medium
+/// and getting scattered a few times until it gets absorbed
+///
+/// similar to example 3, except that we do it in parallel
+///
 mod test_4_multiple_particles_parallel;
 
