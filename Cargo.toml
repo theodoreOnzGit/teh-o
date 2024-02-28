@@ -18,6 +18,7 @@ serde-xml-rs = "0.6.0"
 statest = "0.2.2"
 statrs = "0.16.0"
 thiserror = "1.0.51"
+toml = "0.8.10"
 uom = "0.35.0"
 
 [[bin]]
@@ -28,6 +29,11 @@ path = "src/main.rs"
 name = "mock_test_cases"
 path = "src/mock_test_cases.rs"
 
+[[bin]]
+name = "nuc_data"
+path = "src/nuc_data.rs"
+
 [lib]
 name = "teh_o"
 path = "src/lib/lib.rs"
+
