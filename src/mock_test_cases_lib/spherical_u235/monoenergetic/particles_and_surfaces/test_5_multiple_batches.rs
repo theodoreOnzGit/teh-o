@@ -251,7 +251,7 @@ pub fn test_5_multiple_batches(){
 
     // basically, to print output, I use an explicit panic, turn off if 
     // not false
-    let panic_and_debug: bool = true;
+    let panic_and_debug: bool = false;
 
     if panic_and_debug {
         panic!();
