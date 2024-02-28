@@ -39,7 +39,7 @@ pub fn test_5_multiple_batches(){
     let _u235_transport_xs: Area = Area::new::<barn>(6.8);
 
     // for scattering, I can take 14 MeV neutrons as a reference 
-    // https://wwwndc.jaea.go.jp/cgi-bin/Tab80WWW.cgi?lib=J40&iso=U235
+    // https://www.ndc.jaea.go.jp/cgi-bin/Tab80WWW.cgi?lib=J40&iso=U235
     // ignoring inelastic scattering here
     
     let u235_scatter_xs: Area = Area::new::<barn>(2.839);
@@ -256,6 +256,32 @@ pub fn test_5_multiple_batches(){
     if panic_and_debug {
         panic!();
     }
+
+    // now, the next thing would be to get actual cross sections of u235
+    // or we could do geometry because it is lower hanging fruit 
+    //
+    // One problem though with getting U235 cross sections is because 
+    // hdf5 dependencies do not seem to compile in release mode due 
+    // to a missing test file (2024)
+    //
+    // While hdf5 is fast, I'd rather have it without dependency issues 
+    // first. Which means let me have my cross sections in plain text 
+    // in a yaml format or xml format. Yaml is preferred of course. 
+    //
+    // And I don't want to write an endf parser from scratch, So I'll 
+    // use Paul Romano's endf parser.
+    //
+    // https://github.com/paulromano/endf-python?tab=readme-ov-file
+    //
+    // https://docs.openmc.org/en/stable/usersguide/data.html
+    //
+    // This is done in python, so I can generate yaml files in python,
+    // then read them in Rust using another separate crate 
+    // like incident neutron nuclear data yaml.
+    //
+    //
+    //
+    //
 
 
 
