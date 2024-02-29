@@ -1,3 +1,11 @@
+use std::fs::File;
+use std::io::Write;
+
+use serde::Deserialize;
+use serde::Serialize;
+use toml::value::Array;
+use toml::Value;
+
 // This binary is responsible for converting the entire hdf5 library 
 // into a yaml format because hdf5 libraries in Rust are quite 
 // problematic 
@@ -67,6 +75,8 @@ pub fn read_u235_data_to_toml() -> Result<(), teh_o::teh_o_error::TehOError>{
     let group_cross_sections_n_fission = file.group("/U235/reactions/reaction_018/294K")?;
 
     //dbg!(&group_cross_sections_n_fission);
+    //https://t2.lanl.gov/nis/endf/mts.html
+    //includes first, second etc. fissions
 
     let n_f_member_names = group_cross_sections_n_fission.member_names()?;
 
@@ -77,7 +87,64 @@ pub fn read_u235_data_to_toml() -> Result<(), teh_o::teh_o_error::TehOError>{
     let u235_fission_array_294K = fission_dataset.read_1d::<f64>()?;
 
     //dbg!(&u235_fission_array_294K);
+    
+    // now convert this to a toml file
+    // to do so, I need to convert the energy and fission arrays into 
+    // a toml readable format
+
+
+    let intermediate_u235_energy_ev_float_vec: Vec<f64> = u235_energy_array.iter().map(
+            |energy_ev|{
+                *energy_ev
+            }
+            ).collect();
+
+    let toml_energy_u235_energy_array: Vec<Value> = 
+        intermediate_u235_energy_ev_float_vec.into_iter().map(
+        |value_f64_ref|{
+            Value::Float(value_f64_ref)
+        }).collect();
+
+
+    let intermediate_u235_fission_xs_barns_float_vec: Vec<f64> = u235_fission_array_294K.iter().map(
+            |n_fission_xs_barns|{
+                *n_fission_xs_barns
+            }
+            ).collect();
+
+    let toml_fission_xs_u235_294K_array: Vec<Value> = 
+        intermediate_u235_fission_xs_barns_float_vec.into_iter().map(
+        |value_f64_ref|{
+            Value::Float(value_f64_ref)
+        }).collect();
+
+    // export to toml file 
+    let fission_xs_toml_294K: FissionXsToml = FissionXsToml { 
+        energy_levels_ev: toml_energy_u235_energy_array, 
+        fission_xs_barns: toml_fission_xs_u235_294K_array
+    };
+    
+    let toml_serialised = toml::to_string(&fission_xs_toml_294K).unwrap();
+
+    dbg!(&toml_serialised);
+
+    // lets convert this to u8
+
+    let toml_u8_string: Vec<u8> = toml_serialised.into(); 
+
+    // i find that toml is quite unwieldy to work with cargo watch
+
+    
+    let mut u235_294k_xs_test = File::create("u235_mt18_fission_294K.toml")?;
+    u235_294k_xs_test.write_all(&toml_u8_string)?;
 
     Ok(())
+}
+
+
+#[derive(Serialize,Debug,Deserialize)]
+pub struct FissionXsToml {
+    energy_levels_ev: Array,
+    fission_xs_barns: Array
 }
 
