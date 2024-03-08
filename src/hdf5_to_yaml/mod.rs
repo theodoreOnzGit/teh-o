@@ -22,7 +22,7 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
     use serde_yaml::Value;
 
     let file = hdf5::File::open(
-        "./src/lib/simulation/monte_carlo/openmc/openmc_nuclides/".to_owned()+ nuclide+".h5")?;
+        "./src/lib/simulation/monte_carlo/openmc/openmc_nuclides/".to_owned()+nuclide+".h5")?;
     let ds_energy_levels = file.dataset(&("/".to_owned()+nuclide+"/energy/"+
             temperature_kelvin+"K"))?;
     let nuclide_energy_array = ds_energy_levels.read_1d::<f64>()?;
