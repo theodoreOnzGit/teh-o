@@ -10,7 +10,7 @@ use uom::si::thermodynamic_temperature::kelvin;
 #[derive(Serialize,Debug,Deserialize)]
 pub struct FissionXsYaml {
     energy_levels_ev: serde_yaml::Sequence,
-    fission_xs_barns: serde_yaml::Sequence
+    xs_barns: serde_yaml::Sequence
 }
 
 pub fn get_nuclide_xs_at_temperature(nuclide: &str,
@@ -78,26 +78,26 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
                 Value::Number(value_f64_ref.into())
             }).collect();
 
-    let intermediate_nuclide_fission_xs_barns_float_vec: Vec<f64> = nuclide_fission_array_desired_temp_k.iter().map(
-        |n_fission_xs_barns|{
-            *n_fission_xs_barns
+    let intermediate_nuclide_reaction_xs_barns_float_vec: Vec<f64> = nuclide_fission_array_desired_temp_k.iter().map(
+        |n_reaction_xs_barns|{
+            *n_reaction_xs_barns
         }
     ).collect();
 
     // Sequence is a type alias for Vec<Value>
-    let yaml_fission_xs_nuclide_desired_temp_k_array: Vec<Value> = 
-        intermediate_nuclide_fission_xs_barns_float_vec.into_iter().map(
+    let yaml_reaction_xs_nuclide_desired_temp_k_array: Vec<Value> = 
+        intermediate_nuclide_reaction_xs_barns_float_vec.into_iter().map(
             |value_f64_ref|{
                 Value::Number(value_f64_ref.into())
             }).collect();
 
 
-    let fission_xs_yaml_desired_temp_k: FissionXsYaml = FissionXsYaml { 
+    let reaction_xs_yaml_desired_temp_k: FissionXsYaml = FissionXsYaml { 
         energy_levels_ev: yaml_energy_nuclide_energy_array, 
-        fission_xs_barns: yaml_fission_xs_nuclide_desired_temp_k_array
+        xs_barns: yaml_reaction_xs_nuclide_desired_temp_k_array
     };
 
-    let yaml_serialised = serde_yaml::to_string(&fission_xs_yaml_desired_temp_k).unwrap();
+    let yaml_serialised = serde_yaml::to_string(&reaction_xs_yaml_desired_temp_k).unwrap();
 
     //dbg!(&yaml_serialised);
 
