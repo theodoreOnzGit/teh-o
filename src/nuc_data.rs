@@ -5,6 +5,8 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_yaml::Sequence;
 
+use crate::hdf5_to_yaml::get_nuclide_xs_all_temp;
+
 
 // This binary is responsible for converting the entire hdf5 library 
 // into a yaml format because hdf5 libraries in Rust are quite 
@@ -55,7 +57,8 @@ fn main() {
 
     if toggle_yaml {
         use crate::hdf5_to_yaml::get_nuclide_xs_at_temperature;
-        get_nuclide_xs_at_temperature("U235","018","294").unwrap();
+        //get_nuclide_xs_at_temperature("U235","018","294").unwrap();
+        get_nuclide_xs_all_temp("U235", "018").unwrap();
     }
 
 

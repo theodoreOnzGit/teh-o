@@ -4,6 +4,8 @@ use std::io::Write;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_yaml::Sequence;
+use uom::si::f64::*;
+use uom::si::thermodynamic_temperature::kelvin;
 
 #[derive(Serialize,Debug,Deserialize)]
 pub struct FissionXsYaml {
@@ -57,37 +59,37 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
     let nuclide_fission_array_desired_temp_k = fission_dataset.read_1d::<f64>()?;
 
     //dbg!(&nuclide_fission_array_desired_temp_K);
-    
+
     // now convert this to a toml file
     // to do so, I need to convert the energy and fission arrays into 
     // a toml readable format
 
 
     let intermediate_nuclide_energy_ev_float_vec: Vec<f64> = nuclide_energy_array.iter().map(
-            |energy_ev|{
-                *energy_ev
-            }
-            ).collect();
+        |energy_ev|{
+            *energy_ev
+        }
+    ).collect();
 
     // Sequence is a type alias for Vec<Value>
     let yaml_energy_nuclide_energy_array: Sequence = 
         intermediate_nuclide_energy_ev_float_vec.into_iter().map(
-        |value_f64_ref|{
-            Value::Number(value_f64_ref.into())
-        }).collect();
+            |value_f64_ref|{
+                Value::Number(value_f64_ref.into())
+            }).collect();
 
     let intermediate_nuclide_fission_xs_barns_float_vec: Vec<f64> = nuclide_fission_array_desired_temp_k.iter().map(
-            |n_fission_xs_barns|{
-                *n_fission_xs_barns
-            }
-            ).collect();
+        |n_fission_xs_barns|{
+            *n_fission_xs_barns
+        }
+    ).collect();
 
     // Sequence is a type alias for Vec<Value>
     let yaml_fission_xs_nuclide_desired_temp_k_array: Vec<Value> = 
         intermediate_nuclide_fission_xs_barns_float_vec.into_iter().map(
-        |value_f64_ref|{
-            Value::Number(value_f64_ref.into())
-        }).collect();
+            |value_f64_ref|{
+                Value::Number(value_f64_ref.into())
+            }).collect();
 
 
     let fission_xs_yaml_desired_temp_k: FissionXsYaml = FissionXsYaml { 
@@ -110,6 +112,33 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
         +temperature_kelvin
         +"K.yml")?;
     nuclide_desired_temp_k_xs_test.write_all(&yaml_u8_string)?;
+
+    Ok(())
+}
+
+pub fn get_nuclide_xs_all_temp(nuclide: &str,
+    reaction_mt_number: &str)-> 
+Result<(), teh_o::teh_o_error::TehOError>{
+    let mut temperatures: Vec<ThermodynamicTemperature> = vec![];
+
+    temperatures.push(ThermodynamicTemperature::new::<kelvin>(250.0));
+    temperatures.push(ThermodynamicTemperature::new::<kelvin>(294.0));
+    temperatures.push(ThermodynamicTemperature::new::<kelvin>(600.0));
+    temperatures.push(ThermodynamicTemperature::new::<kelvin>(900.0));
+    temperatures.push(ThermodynamicTemperature::new::<kelvin>(1200.0));
+    temperatures.push(ThermodynamicTemperature::new::<kelvin>(2500.0));
+
+    for temperature_ref in temperatures {
+
+        let temperature_float: f64 = temperature_ref.get::<kelvin>();
+        let temperature_int: u64 = temperature_float as u64;
+        let temperature_str: &str = &temperature_int.to_string();
+
+        get_nuclide_xs_at_temperature(nuclide, reaction_mt_number, 
+            temperature_str)?;
+
+    }
+
 
     Ok(())
 }
