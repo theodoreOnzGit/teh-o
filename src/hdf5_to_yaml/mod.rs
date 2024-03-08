@@ -23,7 +23,8 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
 
     let file = hdf5::File::open(
         "./src/lib/simulation/monte_carlo/openmc/openmc_nuclides/".to_owned()+ nuclide+".h5")?;
-    let ds_energy_levels = file.dataset(&("/".to_owned()+nuclide+"/energy/"+temperature_kelvin))?;
+    let ds_energy_levels = file.dataset(&("/".to_owned()+nuclide+"/energy/"+
+            temperature_kelvin+"K"))?;
     let nuclide_energy_array = ds_energy_levels.read_1d::<f64>()?;
 
     //// this shows energy in eV
@@ -40,7 +41,8 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
 
     // hdf5 group for fission cross section
     let group_cross_sections_n_fission = file.group(
-        &("/".to_owned()+nuclide+"/reactions/reaction_"+reaction_mt_number+"/"+temperature_kelvin))?;
+        &("/".to_owned()+nuclide+"/reactions/reaction_"+reaction_mt_number+"/"
+            +temperature_kelvin+"K"))?;
 
     //dbg!(&group_cross_sections_n_fission);
     //https://t2.lanl.gov/nis/endf/mts.html
@@ -101,7 +103,12 @@ pub fn get_nuclide_xs_at_temperature(nuclide: &str,
 
     let yaml_u8_string: Vec<u8> = yaml_serialised.into(); 
 
-    let mut nuclide_desired_temp_k_xs_test = File::create(nuclide.to_owned()+"_mt18_fission_desired_temp_K.yml")?;
+    let mut nuclide_desired_temp_k_xs_test = File::create(
+        nuclide.to_owned()
+        +"_mt"
+        + reaction_mt_number+"_"
+        +temperature_kelvin
+        +"K.yml")?;
     nuclide_desired_temp_k_xs_test.write_all(&yaml_u8_string)?;
 
     Ok(())
